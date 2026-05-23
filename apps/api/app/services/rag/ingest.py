@@ -2,6 +2,8 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_qdrant import QdrantVectorStore
+from pathlib import Path
+
 
 COLLECTION_NAME = "medical_docs"
 
@@ -17,6 +19,11 @@ def ingest_pdf(pdf_path: str):
     )
 
     chunks = splitter.split_documents(docs)
+    filename = Path(pdf_path).name
+    for chunk in chunks:
+        chunk.metadata["source"] = filename
+        if "page" in chunk.metadata:
+            chunk.metadata["page"] = chunk.metadata["page"] + 1
 
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2"
