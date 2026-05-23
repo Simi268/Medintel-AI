@@ -24,8 +24,9 @@ def ask_medical_question(question: str):
     docs = retriever.invoke(question)
 
     context = "\n\n".join(
-        [doc.page_content for doc in docs]
+    [doc.page_content.replace("\n", " ") for doc in docs]
     )
+
 
     prompt = f"""
 You are MedIntel AI, a healthcare research assistant.
@@ -58,11 +59,13 @@ Answer:
 
 
     for i, doc in enumerate(docs):
-
         sources.append({
-        "chunk": i + 1,
-        "content": doc.page_content[:300]
-    })
+    "chunk": i + 1,
+    "source": doc.metadata.get("source"),
+    "page": doc.metadata.get("page"),
+    "content": doc.page_content[:300].replace("\n", " ")
+})
+
     return {
     "answer": answer,
     "sources": sources
