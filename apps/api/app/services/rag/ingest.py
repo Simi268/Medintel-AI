@@ -2,7 +2,13 @@ import os
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
+<<<<<<< HEAD
 from langchain_community.vectorstores import Chroma
+=======
+from langchain_qdrant import QdrantVectorStore
+from pathlib import Path
+
+>>>>>>> ef49774c79facf4fad35876bdad51868c3c742f8
 
 DATA_PATH = "data/medical_pdfs"
 
@@ -14,7 +20,16 @@ for file in os.listdir(DATA_PATH):
 
         path = os.path.join(DATA_PATH, file)
 
+<<<<<<< HEAD
         print(f"Loading: {file}")
+=======
+    chunks = splitter.split_documents(docs)
+    filename = Path(pdf_path).name
+    for chunk in chunks:
+        chunk.metadata["source"] = filename
+        if "page" in chunk.metadata:
+            chunk.metadata["page"] = chunk.metadata["page"] + 1
+>>>>>>> ef49774c79facf4fad35876bdad51868c3c742f8
 
         loader = PyPDFLoader(path)
 

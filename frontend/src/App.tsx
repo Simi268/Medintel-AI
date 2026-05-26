@@ -76,7 +76,7 @@ function App() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-          },88888
+          },
           body: JSON.stringify({
             question: currentQuestion,
           }),
