@@ -6,10 +6,12 @@ import os
 
 
 # WINDOWS PATH
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+if os.name == "nt":
+    pytesseract.pytesseract.tesseract_cmd = (
+         r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 )
-
+        
+    
 
 def extract_text(file_path: str):
 

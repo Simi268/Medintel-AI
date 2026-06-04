@@ -13,10 +13,10 @@ from app.services.llm.groq_client import client
 # ====================================================
 # TESSERACT
 # ====================================================
-
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-)
+if os.name == "nt":
+    pytesseract.pytesseract.tesseract_cmd = (
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    )
 
 # ====================================================
 # POPPLER
