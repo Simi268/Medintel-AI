@@ -1,4 +1,4 @@
-from app.services.rag.retriever import retriever
+# from app.services.rag.retriever import retriever
 from app.services.llm.groq_client import client
 from app.models.chat import Message
 
@@ -39,22 +39,13 @@ def ask_medical_question(
     # RETRIEVE CONTEXT
     # =====================================================
 
-    docs = retriever.invoke(question[:300])
+    docs = []
 
     # =====================================================
     # FILTER RELEVANT DOCS
     # =====================================================
 
     filtered_docs = []
-
-    for doc in docs:
-        content = doc.page_content.lower()
-
-        if any(
-            keyword in content
-            for keyword in question.lower().split()
-        ):
-            filtered_docs.append(doc)
 
     # =====================================================
     # BUILD CONTEXT
