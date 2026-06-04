@@ -108,39 +108,39 @@ MedIntel AI includes:
 
 ---
 
-##🧠 AI Architecture
+## 🧠 AI Architecture
 1. Medical Chat Assistant
 
 User Question
-↓
+-> 
 LangChain Retriever
-↓
+->
 Medical Knowledge Base
-↓
+->
 Llama 3.3 70B
-↓
+->
 Context-Aware Response
 
 2. Medical Report Analysis
 
 Report Upload
-↓
+->
 OCR Extraction
-↓
+->
 Structured Medical Data Extraction
-↓
+->
 Llama 4 Scout
-↓
+->
 Patient-Friendly Report Summary
 
 3. Drug Interaction Analysis
 
 Medication Input
-↓
+->
 Medical Context Processing
-↓
+->
 Llama 3.3 70B
-↓
+->
 Safety & Interaction Guidance
 
 ---
