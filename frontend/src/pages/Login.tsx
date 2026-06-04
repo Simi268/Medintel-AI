@@ -1,136 +1,237 @@
 import { useState } from "react";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [email, setEmail] =
-    useState("");
-
-  const [password, setPassword] =
-    useState("");
+  const fillDemo = () => {
+    setEmail("demo@medintel.ai");
+    setPassword("demo123");
+  };
 
   const handleLogin = async () => {
+    setLoading(true);
 
     try {
-
       const response = await fetch(
-
         `http://127.0.0.1:8000/auth/login?email=${email}&password=${password}`,
-
         {
           method: "POST",
         }
       );
 
-      const data =
-        await response.json();
+      const data = await response.json();
 
-      console.log(data);
-
-      // SAVE TOKEN
+      if (!response.ok) {
+        alert(data.detail || "Invalid credentials");
+        return;
+      }
 
       localStorage.setItem(
+        "user_id",
+        String(data.user.id)
+      );
 
+      localStorage.setItem(
         "token",
-
         data.access_token
       );
 
-      // SAVE USER
-
       localStorage.setItem(
-
         "user",
-
         JSON.stringify(data.user)
       );
 
-      // REDIRECT
-
       window.location.href = "/";
-
     } catch (error) {
-
       console.error(error);
-
       alert("Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-10 relative overflow-hidden">
 
-    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-6">
+      {/* Floating particles */}
+      <div className="absolute top-10 left-10 w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse" />
+      <div className="absolute top-20 right-32 w-1 h-1 bg-fuchsia-400 rounded-full animate-pulse" />
+      <div className="absolute bottom-20 left-24 w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+      <div className="absolute bottom-10 right-20 w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse" />
 
-      <div className="w-full max-w-md rounded-[32px] border border-fuchsia-500/20 bg-[#0b1220] p-10 shadow-2xl">
+      {/* Background glow */}
+      <div className="absolute w-[1000px] h-[1000px] bg-fuchsia-500/15 blur-[250px] rounded-full" />
 
-        <h1 className="text-5xl font-black text-white">
+      <div className="absolute top-20 left-1/3 w-[600px] h-[600px] bg-purple-500/10 blur-[180px] rounded-full" />
 
-          MedIntel
+      <div className="absolute bottom-20 right-1/3 w-[500px] h-[500px] bg-pink-500/10 blur-[180px] rounded-full" />
+
+      {/* Main Card */}
+      <div
+        className="
+          w-[1300px]
+          min-h-[850px]
+          rounded-[60px]
+          border
+          border-fuchsia-500/20
+          bg-[#0b1220]/80
+          backdrop-blur-xl
+          p-20
+          shadow-2xl
+          relative
+          z-10
+        "
+      >
+        {/* Header */}
+        <h1 className="text-8xl font-black text-white">
+          MedIntel AI
         </h1>
 
-        <p className="text-gray-400 mt-3">
-
-          Login to continue
+        <p className="text-2xl text-gray-400 mt-8 leading-relaxed max-w-4xl">
+          AI-powered medical intelligence platform for disease insights,
+          predictive risk analysis, report interpretation, medication
+          safety analysis, and clinical decision support.
         </p>
 
-        {/* EMAIL */}
-
+        {/* Email */}
         <input
-
           type="email"
-
-          placeholder="Email"
-
+          placeholder="Email Address"
           value={email}
-
           onChange={(e) =>
             setEmail(e.target.value)
           }
-
-          className="w-full mt-8 rounded-2xl bg-white/5 border border-white/10 px-5 py-4 text-white outline-none"
+          className="
+            w-full
+            mt-14
+            rounded-3xl
+            bg-[#141a2f]
+            border
+            border-white/10
+            px-8
+            py-7
+            text-2xl
+            text-white
+            placeholder:text-gray-400
+            outline-none
+            focus:border-fuchsia-500
+          "
         />
 
-        {/* PASSWORD */}
-
+        {/* Password */}
         <input
-
           type="password"
-
           placeholder="Password"
-
           value={password}
-
           onChange={(e) =>
-            setPassword(
-              e.target.value
-            )
+            setPassword(e.target.value)
           }
-
-          className="w-full mt-5 rounded-2xl bg-white/5 border border-white/10 px-5 py-4 text-white outline-none"
+          className="
+            w-full
+            mt-6
+            rounded-3xl
+            bg-[#141a2f]
+            border
+            border-white/10
+            px-8
+            py-7
+            text-2xl
+            text-white
+            placeholder:text-gray-400
+            outline-none
+            focus:border-fuchsia-500
+          "
         />
 
-        {/* BUTTON */}
-
+        {/* Login */}
         <button
-
+          disabled={loading}
           onClick={handleLogin}
-
-          className="w-full mt-8 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 py-4 font-bold text-white"
+          className="
+            w-full
+            mt-8
+            rounded-3xl
+            bg-gradient-to-r
+            from-purple-500
+            to-pink-500
+            py-7
+            text-3xl
+            font-black
+            text-white
+            hover:scale-[1.01]
+            transition-all
+            disabled:opacity-50
+          "
         >
-
-          Login
-
+          {loading ? "Signing In..." : "Login"}
         </button>
-        localStorage.setItem(
-          "user_id",
-          data.user.id
-        );
-        localStorage.setItem(
-         "token",
-        data.access_token
-        );
 
+        {/* Demo Section */}
+        <div
+          className="
+            mt-10
+            rounded-3xl
+            bg-black/20
+            border
+            border-fuchsia-500/20
+            p-8
+          "
+        >
+          <h2 className="text-3xl font-bold text-white">
+            Demo Access
+          </h2>
+
+          <p className="text-xl text-gray-400 mt-3">
+            Visitors can instantly explore
+            MedIntel AI using the public demo account.
+          </p>
+
+          <div className="mt-6 space-y-4">
+            <p className="text-2xl">
+              <span className="font-bold text-white">
+                Demo Email:
+              </span>{" "}
+              <span className="text-fuchsia-300">
+                demo@medintel.ai
+              </span>
+            </p>
+
+            <p className="text-2xl">
+              <span className="font-bold text-white">
+                Password:
+              </span>{" "}
+              <span className="text-fuchsia-300">
+                demo123
+              </span>
+            </p>
+          </div>
+
+          <button
+            onClick={fillDemo}
+            className="
+              mt-8
+              rounded-2xl
+              border
+              border-fuchsia-500/30
+              px-8
+              py-4
+              text-xl
+              text-fuchsia-400
+              hover:bg-fuchsia-500/10
+              transition-all
+            "
+          >
+            Use Demo Account
+          </button>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-10 text-center text-gray-500 text-lg">
+          Public demo access available for visitors.
+        </div>
       </div>
-
     </div>
   );
 }
