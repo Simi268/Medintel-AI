@@ -17,12 +17,7 @@ if os.name == "nt":
     pytesseract.pytesseract.tesseract_cmd = (
         r"C:\Program Files\Tesseract-OCR\tesseract.exe"
     )
-
-# ====================================================
-# POPPLER
-# ====================================================
-
-POPPLER_PATH = (
+    POPPLER_PATH = (
     r"C:\Users\simi\Downloads\Release-26.02.0-0\poppler-26.02.0\Library\bin"
 )
 
@@ -66,11 +61,14 @@ def extract_text_from_file(
                 full_text += extracted_text
 
             else:
-
-                pages = convert_from_path(
-                    file_path,
-                    poppler_path=POPPLER_PATH
-                )
+                if os.name == "nt":
+                    pages = convert_from_path(
+                        file_path,
+                        poppler_path=POPPLER_PATH
+                    )
+                        
+                else:
+                    pages = convert_from_path(file_path)
 
                 for page in pages:
 
