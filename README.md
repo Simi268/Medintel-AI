@@ -1,71 +1,255 @@
-# MedIntel AI
+# 🩺 MedIntel AI
 
-<<<<<<< HEAD
-MedIntel AI is a multimodal healthcare intelligence platform powered by LLMs, RAG pipelines, and AI agents.
+MedIntel AI is a modern AI-powered healthcare assistant designed to help users understand symptoms, analyze medical reports, check medication information, calculate BMI, and receive intelligent healthcare insights through a premium conversational interface.
 
-## Features
+---
 
-- Medical PDF ingestion
-- Vector embeddings with Qdrant
-- Healthcare-focused RAG pipeline
-- Groq-powered LLM responses
-- Grounded medical question answering
+## ✨ Features
 
-## Tech Stack
+### 🤖 AI Healthcare Chat Assistant
 
-- FastAPI
-- Groq API
-- LangChain
-- Qdrant
-- SentenceTransformers
-- Docker
+* Symptom analysis
+* Medical guidance
+* Follow-up conversation support
+* Context-aware responses
+* Natural conversational experience
 
-## Current Status
+### 📄 Medical Report Analyzer
 
-✅ Backend architecture  
-✅ PDF ingestion  
-✅ Vector database integration  
-✅ Retrieval-Augmented Generation (RAG)
+* Upload PDF reports
+* Upload medical scans/images
+* OCR-powered text extraction
+* AI-generated report explanations
+* Patient-friendly summaries
 
-## Run Locally
+### 💊 Drug Interaction Checker
+
+* Medication information lookup
+* Side effects explanation
+* Safety precautions
+* Drug interaction guidance
+* Easy-to-understand language
+
+### 🧮 BMI Calculator
+
+* Instant BMI calculation
+* Health category classification
+* Quick wellness assessment
+
+### 🖼️ Medical Image Analysis
+
+* Upload medical images
+* AI-powered visual observations
+* General healthcare suggestions
+* Safety recommendations
+
+### 🎤 Voice Features
+
+* Speech-to-text input
+* Text-to-speech responses
+* Hands-free interaction
+
+### 🧠 Smart Conversation Management
+
+* ChatGPT-style conversation titles
+* Persistent chat history
+* Context-aware follow-up questions
+* User-specific conversations
+
+---
+
+## 🎨 User Interface
+
+MedIntel AI includes:
+
+* Premium healthcare dashboard
+* Modern glassmorphism design
+* Animated purple healthcare theme
+* Floating medical icons
+* Dynamic background glow effects
+* Responsive layout
+* Dark mode interface
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* Axios
+* Lucide React
+
+### Backend
+
+* FastAPI
+* Python
+* SQLAlchemy
+* SQLite
+
+### AI & Machine Learning
+
+* Groq API
+* Llama 3.3 70B Versatile
+* LangChain
+* RAG (Retrieval Augmented Generation)
+
+### OCR & Document Processing
+
+* Tesseract OCR
+* OpenCV
+* PyMuPDF
+* PDF2Image
+* Poppler
+
+---
+
+## 🚀 Installation
+
+### Clone Repository
 
 ```bash
-docker compose up
+git clone https://Simi268/MedIntel-AI.git
 
+cd MedIntel-AI
+```
+
+---
+
+## Backend Setup
+
+```bash
+cd backend
+
+python -m venv venv
+
+venv\Scripts\activate
+
+pip install -r requirements.txt
+```
+
+Create a `.env` file:
+
+```env
+GROQ_API_KEY=YOUR_GROQ_API_KEY
+```
+
+Run backend:
+
+```bash
 uvicorn app.main:app --reload
-=======
-MedIntel AI is an AI-powered healthcare assistant currently under active development.
+```
 
-The project aims to provide:
-- AI health chat
-- Medical report analysis
-- Drug information & interaction checking
-- Healthcare RAG system
-- Voice-enabled assistance
-- Personalized health insights
+Backend runs at:
 
-## Tech Stack
-- React + TypeScript + Tailwind
-- FastAPI
-- Groq LLM
-- LangChain
-- ChromaDB
-- HuggingFace Embeddings
+```text
+http://localhost:8000
+```
 
-## Current Status
-⚠️ This project is still in development and many features are experimental or incomplete.
+---
 
-Upcoming improvements:
-- Advanced RAG pipeline
-- Better medical report understanding
-- Doctor mode
-- Authentication
-- Real-time AI streaming
-- PDF knowledge ingestion
-- Multilingual support
+## Frontend Setup
 
-This repository is being actively improved as part of an AI healthcare platform initiative.
+```bash
+cd frontend
 
+npm install
+```
 
+Run frontend:
 
->>>>>>> ef49774c79facf4fad35876bdad51868c3c742f8
+```bash
+npm run dev
+```
+
+Frontend runs at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## Supported File Types
+
+### Report Analyzer
+
+* PDF
+* PNG
+* JPG
+* JPEG
+* TXT
+
+### Image Analysis
+
+* PNG
+* JPG
+* JPEG
+
+---
+
+## Key AI Capabilities
+
+### Symptom Guidance
+
+Examples:
+
+* Fever
+* Headache
+* Dizziness
+* Skin rash
+* Chest pain
+* Fatigue
+* Burns
+* Infections
+
+### Medical Reports
+
+Supports:
+
+* Blood reports
+* CBC reports
+* Diabetes reports
+* Radiology reports
+* Prescriptions
+* Discharge summaries
+
+### Medication Support
+
+Provides:
+
+* Medication purpose
+* Side effects
+* Safety advice
+* Interaction warnings
+
+---
+
+## Security Notice
+
+MedIntel AI is designed for educational and informational purposes only.
+
+The application:
+
+* Does not provide medical diagnoses
+* Does not replace professional healthcare advice
+* Should not be used during medical emergencies
+
+Always consult a qualified healthcare professional for diagnosis and treatment decisions.
+
+---
+
+## Future Improvements
+
+* Appointment booking integration
+* Healthcare provider recommendations
+* Multi-language support
+* Medical report history
+* User profile dashboard
+* Health risk prediction models
+* Voice conversations
+  
+
