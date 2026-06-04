@@ -15,7 +15,7 @@ export default function Login() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/auth/login?email=${email}&password=${password}`,
+        `https://medintel-ai-75k0.onrender.com/auth/login?email=${email}&password=${password}`,
         {
           method: "POST",
         }

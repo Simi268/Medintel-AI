@@ -15,7 +15,7 @@ export default function Signup() {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/auth/signup?email=${email}&password=${password}`,
+        `https://medintel-ai-75k0.onrender.com/auth/signup?email=${email}&password=${password}`,
 
         {
           method: "POST",
