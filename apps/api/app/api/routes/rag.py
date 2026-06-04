@@ -1,167 +1,112 @@
-from fastapi import APIRouter, UploadFile, File
+
+from fastapi import APIRouter
 from pydantic import BaseModel
-<<<<<<< HEAD
-from app.services.rag.pipeline import ask_medical_question
-from app.services.llm.groq_client import client
-=======
 
-from pathlib import Path
-import shutil
+from app.services.rag.pipeline import (
+    ask_medical_question
+)
 
-from app.services.rag.pipeline import ask_medical_question
-from app.services.rag.ingest import ingest_pdf
->>>>>>> ef49774c79facf4fad35876bdad51868c3c742f8
+from app.services.llm.groq_client import (
+    client
+)
 
 router = APIRouter()
 
-# =========================
-# Request Schema
-# =========================
-
-class RAGRequest(BaseModel):
-    question: str
-
-
-# =========================
-# Upload Directory
-# =========================
-
-UPLOAD_DIR = Path("data/uploads")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-
-
-# =========================
-# Ask Medical Questions
-# =========================
-
-@router.post("/ask")
-async def ask_rag(request: RAGRequest):
-
-    response = ask_medical_question(
-        request.question
-    )
-
-    return response
-
-
-# =========================
-# Upload + Ingest PDFs
-# =========================
-
-@router.post("/upload")
-async def upload_pdf(
-    file: UploadFile = File(...)
-):
-
-    # Validate PDF
-    if not file.filename.endswith(".pdf"):
-        return {
-            "error": "Only PDF files are allowed"
-        }
-
-    # Save file
-    file_path = UPLOAD_DIR / file.filename
-
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    # Ingest into Qdrant
-    ingest_pdf(str(file_path))
-
-    return {
-        "message": "PDF uploaded and ingested successfully",
-        "filename": file.filename
-    }
-
-
-
+# ====================================================
+# REQUEST MODELS
+# ====================================================
 
 class QuestionRequest(BaseModel):
     question: str
+    language: str = "English"
+    conversation_id: int | None = None
 
 
 class DrugRequest(BaseModel):
     drug: str
 
 
-class ReportRequest(BaseModel):
-    report_text: str
+# ====================================================
+# CHAT ROUTE
+# ====================================================
+
+from sqlalchemy.orm import Session
+from fastapi import Depends
+
+from app.db.database import SessionLocal
+
+
+def get_db():
+
+    db = SessionLocal()
+
+    try:
+        yield db
+
+    finally:
+        db.close()
 
 
 @router.post("/ask")
-async def ask_rag(request: QuestionRequest):
+async def ask_rag(
+    request: QuestionRequest,
+    db: Session = Depends(get_db)
+):
 
-    try:
+    response = ask_medical_question(
 
-        response = ask_medical_question(
-            request.question
-        )
+        question=request.question,
 
-        return {
-            "response": response
-        }
+        language=request.language,
 
-    except Exception as e:
+        conversation_id=request.conversation_id,
 
-        return {
-            "response":
-            f"Backend Error: {str(e)}"
-        }
+        db=db
 
-
-@router.post("/drug-check")
-async def drug_check(request: DrugRequest):
-
-    prompt = f"""
-    Explain this medication in simple patient-friendly language.
-
-    Medication:
-    {request.drug}
-
-    Include:
-    - What it is used for
-    - Common side effects
-    - Safety precautions
-    - Interaction warnings
-    """
-
-    completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
     )
 
     return {
-        "response": completion.choices[0].message.content
+        "response": response
     }
 
 
-@router.post("/analyze-report")
-async def analyze_report(request: ReportRequest):
+# ====================================================
+# DRUG INTERACTION CHECKER
+# ====================================================
+
+@router.post("/drug-check")
+async def drug_check(
+    request: DrugRequest
+):
 
     prompt = f"""
-    You are a patient-friendly AI healthcare assistant.
+You are MedIntel AI.
 
-    Explain this medical report in VERY SIMPLE language.
+You are a smart AI healthcare assistant.
 
-    Report:
-    {request.report_text}
+Explain these medicines in:
+- simple language
+- warm tone
+- patient-friendly style
 
-    Format:
+Medicines:
+{request.drug}
 
-    1. What each value means
-    2. Whether it is normal or abnormal
-    3. Possible causes
-    4. Symptoms patient may notice
-    5. Lifestyle recommendations
-    6. When to consult a doctor
+Explain:
+1. What these medicines are used for
+2. Whether this combination is safe
+3. Common side effects
+4. Important precautions
+5. Best time to take them
+6. When doctor consultation is needed
 
-    Make it easy for non-medical users.
-    """
+Rules:
+- Use bullet points
+- Keep response visually pleasant
+- Avoid robotic medical jargon
+- Sound modern and conversational
+- Use emojis moderately
+"""
 
     completion = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
@@ -171,8 +116,10 @@ async def analyze_report(request: ReportRequest):
                 "content": prompt,
             }
         ],
+        temperature=0.7,
     )
 
     return {
-        "response": completion.choices[0].message.content
+        "response":
+        completion.choices[0].message.content
     }

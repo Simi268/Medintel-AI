@@ -1,85 +1,75 @@
-from fastapi import APIRouter, UploadFile, File
 
-router = APIRouter(
-    prefix="/report",
-    tags=["Report Analysis"]
+from fastapi import APIRouter, UploadFile, File
+from pathlib import Path
+import shutil
+
+from app.services.report.report_analyzer import (
+    analyze_report
 )
 
+router = APIRouter()
 
-@router.post("/analyze-report")
-async def analyze_report(
+# ====================================================
+# UPLOAD DIRECTORY
+# ====================================================
+
+UPLOAD_DIR = Path("uploads")
+
+UPLOAD_DIR.mkdir(
+    exist_ok=True
+)
+
+# ====================================================
+# REPORT ANALYSIS ROUTE
+# ====================================================
+
+@router.post("/analyze")
+async def analyze_medical_report(
     file: UploadFile = File(...)
 ):
 
-    content = await file.read()
+    try:
 
-    text = content.decode("utf-8")
+        print("Received file:", file.filename)
 
-    findings = []
+        # ============================================
+        # SAVE FILE
+        # ============================================
 
-    # ----------------------------
-    # SIMPLE RULE-BASED ANALYSIS
-    # ----------------------------
+        file_path = (
+            UPLOAD_DIR / file.filename
+        )
 
-    if "Hemoglobin: 9.5" in text:
-        findings.append({
-            "title": "Low Hemoglobin",
-            "severity": "Moderate",
-            "explanation":
-                "Your hemoglobin appears lower than normal. "
-                "This may indicate anemia, which can cause "
-                "fatigue, weakness, or dizziness.",
-            "recommendation":
-                "Consider iron-rich foods and consult a doctor "
-                "for further evaluation."
-        })
+        with open(
+            file_path,
+            "wb"
+        ) as buffer:
 
-    if "WBC Count: 14000" in text:
-        findings.append({
-            "title": "Elevated White Blood Cell Count",
-            "severity": "High",
-            "explanation":
-                "Your white blood cell count is elevated. "
-                "This may happen during infections or inflammation.",
-            "recommendation":
-                "Monitor symptoms like fever or fatigue and "
-                "seek medical advice if needed."
-        })
+            shutil.copyfileobj(
+                file.file,
+                buffer
+            )
 
-    if "Cholesterol: 260" in text:
-        findings.append({
-            "title": "High Cholesterol",
-            "severity": "High",
-            "explanation":
-                "Your cholesterol level is above the healthy range. "
-                "High cholesterol may increase heart disease risk.",
-            "recommendation":
-                "Reduce oily foods, exercise regularly, "
-                "and consider medical consultation."
-        })
+        print("Saved file:", file_path)
 
-    if "Blood Sugar: 180" in text:
-        findings.append({
-            "title": "High Blood Sugar",
-            "severity": "Moderate",
-            "explanation":
-                "Your blood sugar level is elevated. "
-                "This may suggest diabetes or prediabetes.",
-            "recommendation":
-                "Reduce sugar intake, stay active, "
-                "and monitor glucose levels."
-        })
+        # ============================================
+        # ANALYZE REPORT
+        # ============================================
 
-    # ----------------------------
-    # FINAL RESPONSE
-    # ----------------------------
+        result = analyze_report(
+            str(file_path)
+        )
 
-    return {
-        "summary":
-            "AI analysis completed. "
-            "Some abnormal health indicators were detected.",
+        print("Analysis completed")
 
-        "findings": findings,
+        return {
+            "analysis": result
+        }
 
-        "preview": text[:500]
-    }
+    except Exception as e:
+
+        print("REPORT ERROR:", str(e))
+
+        return {
+            "analysis": f"Unable to analyze report. {str(e)}"
+        }

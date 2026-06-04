@@ -1,0 +1,26 @@
+```text
+Hospital Name: CityCare Hospital
+
+Patient Name: Rajesh Kumar
+Age: 58
+Gender: Male
+
+Blood Pressure: 150/95 mmHg
+Heart Rate: 104 bpm
+
+Total Cholesterol: 245 mg/dL
+LDL Cholesterol: 168 mg/dL
+HDL Cholesterol: 38 mg/dL
+Triglycerides: 210 mg/dL
+
+Hemoglobin: 11.2 g/dL
+Blood Sugar: 165 mg/dL
+WBC: 12800
+
+Troponin-I: 0.9 ng/mL
+
+Diagnosis:
+Stage 1 Hypertension
+Hyperlipidemia
+Possible Coronary Artery Disease
+```

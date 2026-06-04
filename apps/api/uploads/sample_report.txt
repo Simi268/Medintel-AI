@@ -1,0 +1,4 @@
+Hemoglobin: 9.5 g/dL
+WBC Count: 14000
+Cholesterol: 260 mg/dL
+Blood Sugar: 180 mg/dL

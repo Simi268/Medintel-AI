@@ -1,399 +1,970 @@
-import { useEffect, useRef, useState } from "react"
-import ReactMarkdown from "react-markdown"
+
+import { useEffect, useState } from "react";
+
+import MainLayout from "./components/layout/MainLayout";
+
+import ChatWindow from "./components/chat/ChatWindow";
+import ChatInput from "./components/chat/ChatInput";
+
+import RightPanel from "./components/widgets/RightPanel";
+
+import ReportModal from "./components/modals/ReportModal";
+import DrugModal from "./components/modals/DrugModal";
+import BMIModal from "./components/modals/BMIModal";
+
+import api from "./services/api";
+
+import type { Message } from "./types/chat";
 
 import {
   Brain,
-  Send,
+  Activity,
   Pill,
   FileText,
   Calculator,
-  Activity,
-  Sparkles,
-  Mic,
-} from "lucide-react"
+} from "lucide-react";
 
-function App() {
-  const [input, setInput] = useState("")
-  const [messages, setMessages] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
-  const [recentChats, setRecentChats] = useState<string[]>([])
 
-  const chatEndRef = useRef<HTMLDivElement | null>(null)
+// =================================================
+// SPEECH TYPES
+// =================================================
+
+declare global {
+
+  interface Window {
+
+    SpeechRecognition: any;
+
+    webkitSpeechRecognition: any;
+  }
+}
+
+export default function App() {
+
+  // =================================================
+  // USER
+  // =================================================
+
+  const userId =
+    Number(
+      localStorage.getItem("user_id")
+    );
+
+  // =================================================
+  // STATES
+  // =================================================
+
+  const [message, setMessage] =
+    useState("");
+
+  const [messages, setMessages] =
+    useState<Message[]>([]);
+
+  const [isTyping, setIsTyping] =
+    useState(false);
+
+  const [isListening, setIsListening] =
+    useState(false);
+
+  const [conversationId, setConversationId] =
+    useState<number | null>(null);
+
+  const [conversations, setConversations] =
+    useState<any[]>([]);
+
+  const [selectedImage, setSelectedImage] =
+    useState<File | null>(null);
+
+  // =================================================
+  // MODALS
+  // =================================================
+
+  const [reportOpen, setReportOpen] =
+    useState(false);
+
+  const [drugOpen, setDrugOpen] =
+    useState(false);
+
+  const [bmiOpen, setBMIOpen] =
+    useState(false);
+
+  // =================================================
+  // LOAD CONVERSATIONS
+  // =================================================
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-    })
-  }, [messages, loading])
 
-  useEffect(() => {
-    localStorage.setItem(
-      "medintel_messages",
-      JSON.stringify(messages)
-    )
-  }, [messages])
+    fetchConversations();
 
-  useEffect(() => {
-    const savedMessages =
-      localStorage.getItem("medintel_messages")
+  }, []);
 
-    if (savedMessages) {
-      setMessages(JSON.parse(savedMessages))
-    }
-  }, [])
+  // =================================================
+  // FETCH CONVERSATIONS
+  // =================================================
 
-  const askAI = async () => {
-    if (!input.trim()) return
-
-    const userMessage = {
-      sender: "user",
-      text: input,
-    }
-
-    setMessages((prev) => [...prev, userMessage])
-
-    const shortTitle =
-      input.length > 26
-        ? input.substring(0, 26) + "..."
-        : input
-
-    setRecentChats((prev) => {
-      if (!prev.includes(shortTitle)) {
-        return [shortTitle, ...prev]
-      }
-      return prev
-    })
-
-    const currentQuestion = input
-
-    setInput("")
-    setLoading(true)
+  const fetchConversations = async () => {
 
     try {
+
       const response = await fetch(
-        "http://127.0.0.1:8000/rag/ask",
+
+        `http://127.0.0.1:8000/chat/conversations?user_id=${userId}`
+
+      );
+
+      const data = await response.json();
+
+      setConversations(data);
+
+    } catch (error) {
+
+      console.error(error);
+    }
+  };
+
+  // =================================================
+  // LOAD CONVERSATION
+  // =================================================
+
+  const loadConversation = async (
+    id: number
+  ) => {
+
+    try {
+
+      const response = await fetch(
+        `http://127.0.0.1:8000/chat/messages/${id}`
+      );
+
+      const data = await response.json();
+
+      const formatted = data.map(
+        (msg: any) => ({
+          role: msg.role,
+          content: msg.content,
+        })
+      );
+
+      setMessages(formatted);
+
+      setConversationId(id);
+
+    } catch (error) {
+
+      console.error(error);
+    }
+  };
+
+  // =================================================
+  // CREATE CONVERSATION
+  // =================================================
+
+  const createConversation = async (
+    question: string
+  ) => {
+
+    try {
+
+      const response = await fetch(
+
+        `http://127.0.0.1:8000/chat/conversation?question=${encodeURIComponent(question)}&user_id=${userId}`,
+
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            question: currentQuestion,
-          }),
         }
-      )
+      );
 
-      const data = await response.json()
+      const data = await response.json();
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: "ai",
-          text:
-            data.response ||
-            "No AI response available.",
-        },
-      ])
+      setConversationId(data.id);
+
+      await fetchConversations();
+
+      return data.id;
+
     } catch (error) {
-      setMessages((prev) => [
-        ...prev,
+
+      console.error(error);
+    }
+  };
+
+  // =================================================
+  // DELETE CONVERSATION
+  // =================================================
+
+  const deleteConversation = async (
+    id: number
+  ) => {
+
+    try {
+
+      await fetch(
+
+        `http://127.0.0.1:8000/chat/conversation/${id}`,
+
         {
-          sender: "ai",
-          text:
-            "⚠️ Unable to connect to AI backend.",
-        },
-      ])
+          method: "DELETE",
+        }
+      );
+
+      setConversations((prev) =>
+        prev.filter(
+          (c) => c.id !== id
+        )
+      );
+
+      if (conversationId === id) {
+
+        setMessages([]);
+
+        setConversationId(null);
+      }
+
+    } catch (error) {
+
+      console.error(error);
+    }
+  };
+
+  // =================================================
+  // SAVE MESSAGE
+  // =================================================
+
+  const saveMessage = async (
+
+    convoId: number,
+
+    role: string,
+
+    content: string
+  ) => {
+
+    try {
+
+      await fetch(
+
+        "http://127.0.0.1:8000/chat/message"
+        + `?conversation_id=${convoId}`
+        + `&role=${role}`
+        + `&content=${encodeURIComponent(content)}`,
+
+        {
+          method: "POST",
+        }
+      );
+
+    } catch (error) {
+
+      console.error(error);
+    }
+  };
+
+  // =================================================
+  // SMART TITLE
+  // =================================================
+
+  const generateConversationTitle = (
+    aiText: string
+  ) => {
+
+    const text =
+      aiText.toLowerCase();
+
+    if (
+      text.includes("fracture")
+    ) {
+      return "Fracture Analysis";
     }
 
-    setLoading(false)
-  }
+    if (
+      text.includes("skin rash")
+    ) {
+      return "Skin Rash Analysis";
+    }
+
+    if (
+      text.includes("pneumonia")
+    ) {
+      return "Chest X-ray Review";
+    }
+
+    if (
+      text.includes("diabetes")
+    ) {
+      return "Diabetes Report";
+    }
+
+    return "Medical Analysis";
+  };
+
+
+  // =================================================
+  // SEND MESSAGE
+  // =================================================
+
+  const sendMessage = async () => {
+
+    if (
+      !message.trim() &&
+      !selectedImage
+    ) {
+      return;
+    }
+
+    const currentMessage =
+      message;
+
+    let convoId =
+      conversationId;
+
+    // =================================================
+    // CREATE CONVERSATION
+    // =================================================
+
+    if (!convoId) {
+
+      const title =
+        currentMessage?.trim()
+
+          ? currentMessage
+
+          : selectedImage
+
+            ? selectedImage.name
+                .replace(/\.[^/.]+$/, "")
+                .replace(/[_-]/g, " ")
+
+            : "New Conversation";
+
+      convoId =
+        await createConversation(
+          title
+        );
+    }
+
+    // =================================================
+    // USER MESSAGE
+    // =================================================
+
+    const userMessage: any = {
+
+      role: "user",
+
+      content:
+        currentMessage ||
+        "🖼️ Uploaded Image",
+
+      image: selectedImage
+        ? URL.createObjectURL(
+            selectedImage
+          )
+        : null,
+    };
+
+    setMessages((prev) => [
+      ...prev,
+      userMessage,
+    ]);
+
+    await saveMessage(
+
+      convoId!,
+
+      "user",
+
+      currentMessage ||
+      "Uploaded Image"
+    );
+
+    setMessage("");
+
+    setIsTyping(true);
+
+    // =================================================
+    // IMAGE ANALYSIS
+    // =================================================
+
+    if (selectedImage) {
+
+      try {
+
+        const formData =
+          new FormData();
+
+        formData.append(
+          "file",
+          selectedImage
+        );
+
+        formData.append(
+          "question",
+          currentMessage
+        );
+
+        const response =
+          await fetch(
+            "http://127.0.0.1:8000/vision/analyze",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+        const data =
+          await response.json();
+
+        const aiResponse =
+          data.response;
+
+        const smartTitle =
+          generateConversationTitle(
+            aiResponse
+          );
+
+        // UPDATE TITLE
+
+        await fetch(
+
+          `http://127.0.0.1:8000/chat/conversation/${convoId}?title=${encodeURIComponent(smartTitle)}`,
+
+          {
+            method: "PUT",
+          }
+        );
+
+        await fetchConversations();
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: aiResponse,
+          },
+        ]);
+
+        await saveMessage(
+
+          convoId!,
+
+          "assistant",
+
+          aiResponse
+        );
+
+        
+        setIsTyping(false);
+
+      } catch (error) {
+
+        console.error(error);
+
+        setIsTyping(false);
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content:
+              "❌ Failed to analyze image.",
+          },
+        ]);
+      }
+
+      setSelectedImage(null);
+
+      return;
+    }
+
+    // =================================================
+    // NORMAL CHAT
+    // =================================================
+
+    try {
+
+      const response =
+        await api.post(
+          "/rag/ask",
+          {
+            question:
+              currentMessage,
+
+            language:
+              "English",
+
+            conversation_id:
+              conversationId,
+          }
+        );
+
+      const aiResponse =
+        response.data.response;
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: aiResponse,
+        },
+      ]);
+
+      await saveMessage(
+
+        convoId!,
+
+        "assistant",
+
+        aiResponse
+      );
+
+      setIsTyping(false);
+
+    } catch (error) {
+
+      console.error(error);
+
+      setIsTyping(false);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "Unable to connect to MedIntel AI backend.",
+        },
+      ]);
+    }
+  };
+
+  // =================================================
+  // IMAGE UPLOAD
+  // =================================================
+
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+
+    if (
+      e.target.files &&
+      e.target.files[0]
+    ) {
+
+      setSelectedImage(
+        e.target.files[0]
+      );
+    }
+  };
+
+  // =================================================
+  // MIC
+  // =================================================
+
+  const startListening = () => {
+
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+
+      alert(
+        "Speech recognition not supported."
+      );
+
+      return;
+    }
+
+    try {
+
+      setIsListening(true);
+
+      const recognition =
+        new SpeechRecognition();
+
+      recognition.lang =
+        "en-US";
+
+      recognition.start();
+
+      recognition.onresult = (
+        event: any
+      ) => {
+
+        const transcript =
+          event.results[0][0]
+            .transcript;
+
+        setMessage(transcript);
+      };
+
+      recognition.onend = () => {
+
+        setIsListening(false);
+      };
+
+      recognition.onerror = () => {
+
+        setIsListening(false);
+      };
+
+    } catch (error) {
+
+      console.error(error);
+
+      setIsListening(false);
+    }
+  };
+
+  // =================================================
+  // NEW CHAT
+  // =================================================
+
+  const newConversation = () => {
+
+    setConversationId(null);
+
+    setMessages([]);
+
+    setSelectedImage(null);
+  };
+
+  // =================================================
+  // UI
+  // =================================================
 
   return (
-    <div className="h-screen bg-[#050816] text-white flex overflow-hidden max-w-[1920px] mx-auto">
-      {/* LEFT SIDEBAR */}
 
-      <div className="w-[230px] bg-[#091225] border-r border-white/10 flex flex-col justify-between p-4">
-        <div>
-          {/* LOGO */}
+    <>
 
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
-              <Brain size={24} />
-            </div>
+      <MainLayout
 
-            <div>
-              <h1 className="text-3xl font-black leading-none">
-                MedIntel AI
-              </h1>
+        conversations={conversations}
 
-              <p className="text-gray-400 text-xs mt-1">
-                Healthcare Intelligence
-              </p>
-            </div>
-          </div>
+        onSelectConversation={
+          loadConversation
+        }
 
-          {/* NEW CHAT */}
+        onNewConversation={
+          newConversation
+        }
 
-          <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 text-lg font-bold shadow-2xl shadow-purple-500/20 hover:scale-[1.02] transition-all duration-300">
-            + New Conversation
-          </button>
+        onDeleteConversation={
+          deleteConversation
+        }
 
-          {/* RECENT CHATS */}
+        rightPanel={
 
-          <div className="mt-10">
-            <h2 className="text-gray-500 text-xs font-bold tracking-[2px] mb-4">
-              RECENT CONVERSATIONS
-            </h2>
+          <RightPanel
 
-            <div className="space-y-3">
-              {recentChats.map((chat, index) => (
-                <div
-                  key={index}
-                  className="bg-white/5 border border-white/10 hover:border-purple-500/40 hover:bg-white/10 rounded-2xl px-4 py-4 transition-all duration-300 cursor-pointer"
-                >
-                  <div className="flex items-start gap-3">
-                    <Activity
-                      className="text-purple-400 mt-1"
-                      size={16}
-                    />
+            openReport={() =>
+              setReportOpen(true)
+            }
 
-                    <div>
-                      <p className="font-semibold text-sm leading-6">
-                        {chat}
-                      </p>
+            openDrug={() =>
+              setDrugOpen(true)
+            }
 
-                      <p className="text-gray-500 text-[11px] mt-1">
-                        AI conversation
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+            openBMI={() =>
+              setBMIOpen(true)
+            }
 
-        {/* HEALTH INSIGHT */}
+          />
+        }
 
-        <div className="rounded-3xl bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/10 border border-purple-500/20 p-5 shadow-xl">
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles
-              className="text-green-400"
-              size={16}
-            />
+      >
+{/* CHAT */}
+{messages.length === 0 && !conversationId ? (
 
-            <h3 className="font-bold text-sm">
-              Health Insight
-            </h3>
-          </div>
+<div className="flex-1 relative overflow-hidden bg-[#030712] flex items-center justify-center">
 
-          <p className="text-lg font-bold leading-9">
-            “Small healthy habits today create
-            a stronger tomorrow.”
-          </p>
+  {/* BACKGROUND */}
+  <div className="absolute inset-0 overflow-hidden">
 
-          <p className="text-gray-400 text-xs mt-4 leading-6">
-            Stay hydrated, sleep well, and consult
-            professionals when symptoms persist.
-          </p>
-        </div>
+    {/* CENTER GLOW */}
+    <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 bg-purple-500/15 blur-[220px] rounded-full glow-float" />
+
+    {/* TOP LEFT GLOW */}
+    <div className="absolute top-10 left-1/4 w-[450px] h-[450px] bg-fuchsia-500/10 blur-[180px] rounded-full glow-float" />
+
+    {/* BOTTOM RIGHT GLOW */}
+    <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/10 blur-[180px] rounded-full glow-float" />
+
+    {/* EXTRA PURPLE HAZE */}
+    <div className="absolute top-1/3 right-1/3 w-[300px] h-[300px] bg-violet-500/10 blur-[160px] rounded-full glow-float" />
+
+    {/* PARTICLES */}
+    <div className="absolute top-12 left-12 w-2 h-2 bg-fuchsia-400/50 rounded-full animate-pulse" />
+    <div className="absolute top-24 right-24 w-2 h-2 bg-purple-400/50 rounded-full animate-pulse" />
+    <div className="absolute bottom-40 left-1/4 w-2 h-2 bg-fuchsia-400/50 rounded-full animate-pulse" />
+    <div className="absolute bottom-24 right-12 w-2 h-2 bg-purple-400/50 rounded-full animate-pulse" />
+    <div className="absolute top-1/3 left-2/3 w-1 h-1 bg-white/70 rounded-full animate-ping" />
+
+  </div>
+
+  {/* HERO CONTENT */}
+  <div className="relative z-10 flex flex-col items-center">
+
+    {/* BRAIN */}
+    <div className="relative mb-12">
+
+      <div className="absolute inset-0 rounded-full border border-fuchsia-500/20 scale-[1.3]" />
+      <div className="absolute inset-0 rounded-full border border-fuchsia-500/10 scale-[1.6]" />
+      <div className="absolute inset-0 rounded-full border border-fuchsia-500/10 scale-[1.9]" />
+
+      <div className="w-32 h-32 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-[0_0_120px_rgba(217,70,239,0.55)] animate-pulse">
+
+        <Brain
+          size={56}
+          className="text-white"
+        />
+
       </div>
 
-      {/* CENTER */}
+      {/* FLOATING ICONS */}
 
-      <div className="flex-1 flex flex-col bg-gradient-to-b from-[#020617] to-[#071126]">
-        {/* HEADER */}
+      <div className="absolute -left-14 top-6 float-slow w-14 h-14 rounded-2xl bg-[#1f2238] border border-fuchsia-500/20 flex items-center justify-center">
 
-        <div className="px-10 pt-8 pb-5">
-          <div className="flex items-center justify-between">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-purple-300 text-xs font-semibold">
-              <Sparkles size={14} />
-              AI-powered healthcare intelligence
+        <Activity
+          size={24}
+          className="text-fuchsia-400"
+        />
+
+      </div>
+
+      <div className="absolute -right-14 top-8 float-delay w-14 h-14 rounded-2xl bg-[#1f2238] border border-fuchsia-500/20 flex items-center justify-center">
+
+        <Pill
+          size={24}
+          className="text-fuchsia-400"
+        />
+
+      </div>
+
+      <div className="absolute left-1/2 -bottom-8 -translate-x-1/2 float-slow w-14 h-14 rounded-2xl bg-[#1f2238] border border-fuchsia-500/20 flex items-center justify-center">
+
+        <FileText
+          size={24}
+          className="text-fuchsia-400"
+        />
+
+      </div>
+
+    </div>
+
+    {/* TITLE */}
+
+    <h1 className="text-9xl font-black mb-5 bg-gradient-to-r from-white via-pink-200 to-fuchsia-500 bg-clip-text text-transparent">
+
+      MedIntel AI
+
+    </h1>
+
+    {/* SUBTITLE */}
+
+    <p className="text-gray-200 text-xl text-center max-w-4xl leading-relaxed mb-12">
+
+      Describe symptoms, upload reports, analyze medications
+      and receive intelligent AI-powered healthcare insights.
+
+    </p>
+
+    {/* CARDS */}
+
+    <div className="grid grid-cols-4 gap-5">
+
+      <div className="w-44 h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 hover:scale-105 transition-all flex flex-col items-center justify-center">
+
+        <Activity
+          size={26}
+          className="mb-3 text-fuchsia-400"
+        />
+
+        <span className="font-semibold">
+          Symptom Analysis
+        </span>
+
+      </div>
+
+      <div className="w-44 h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 hover:scale-105 transition-all flex flex-col items-center justify-center">
+
+        <FileText
+          size={26}
+          className="mb-3 text-fuchsia-400"
+        />
+
+        <span className="font-semibold">
+          Report Analyzer
+        </span>
+
+      </div>
+
+      <div className="w-44 h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 hover:scale-105 transition-all flex flex-col items-center justify-center">
+
+        <Pill
+          size={26}
+          className="mb-3 text-fuchsia-400"
+        />
+
+        <span className="font-semibold">
+          Drug Interaction
+        </span>
+
+      </div>
+
+      <div className="w-44 h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 hover:scale-105 transition-all flex flex-col items-center justify-center">
+
+        <Calculator
+          size={26}
+          className="mb-3 text-fuchsia-400"
+        />
+
+        <span className="font-semibold">
+          BMI Calculator
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+) : (
+
+<ChatWindow
+  messages={messages}
+/>
+
+)}
+
+
+        
+
+        {/* TYPING */}
+
+        {isTyping && (
+
+          <div className="px-6 md:px-10 pb-6">
+
+            <div className="bg-[#111827] border border-fuchsia-500/10 rounded-3xl px-6 py-5 w-fit shadow-lg">
+
+              <div className="flex items-center gap-2">
+
+                <span className="w-2 h-2 rounded-full bg-fuchsia-400 animate-bounce" />
+
+                <span className="w-2 h-2 rounded-full bg-fuchsia-400 animate-bounce delay-100" />
+
+                <span className="w-2 h-2 rounded-full bg-fuchsia-400 animate-bounce delay-200" />
+
+                <span className="ml-3 text-sm text-gray-300">
+
+                  MedIntel is thinking...
+
+                </span>
+
+              </div>
+
             </div>
 
-            <div className="px-5 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 font-semibold flex items-center gap-2 text-sm">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
-              AI Online
-            </div>
           </div>
+        )}
 
-          <h1 className="text-7xl font-black leading-none mt-6 bg-gradient-to-r from-indigo-300 via-violet-400 to-fuchsia-500 bg-clip-text text-transparent">
-            MedIntel AI
-          </h1>
+        {/* IMAGE PREVIEW */}
 
-          <p className="text-xl text-gray-300 mt-5 font-medium">
-            AI healthcare guidance for symptoms,
-            reports, medications, and wellness.
-          </p>
-        </div>
+        {selectedImage && (
 
-        {/* CHAT */}
+          <div className="px-8 pb-4">
 
-        <div className="flex-1 overflow-y-auto px-10 pt-4 pb-8">
-          <div className="bg-white/[0.03] border border-white/10 rounded-[36px] min-h-[620px] p-8 shadow-2xl">
-            <div className="space-y-8">
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`flex ${
-                    msg.sender === "user"
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}
-                >
-                  <div
-                    className={`max-w-[68%] rounded-[28px] px-7 py-5 shadow-xl ${
-                      msg.sender === "user"
-                        ? "bg-gradient-to-r from-indigo-500 to-fuchsia-600 text-white shadow-purple-500/20"
-                        : "bg-[#3b4050] text-gray-100 border border-white/10"
-                    }`}
-                  >
-                    <div className="leading-8 text-[16px] font-medium">
-                      <ReactMarkdown>
-                        {msg.text}
-                      </ReactMarkdown>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="flex items-center gap-4">
 
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-white/10 border border-white/10 px-6 py-4 rounded-3xl text-gray-300 max-w-[500px] animate-pulse text-base">
-                    🧠 MedIntel AI is analyzing...
-                  </div>
-                </div>
-              )}
+              <img
+                src={URL.createObjectURL(
+                  selectedImage
+                )}
+                alt="preview"
+                className="w-24 h-24 rounded-2xl object-cover border border-fuchsia-500/20"
+              />
 
-              <div ref={chatEndRef}></div>
+              <button
+
+                onClick={() =>
+                  setSelectedImage(
+                    null
+                  )
+                }
+
+                className="px-4 py-2 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400"
+
+              >
+
+                Remove
+
+              </button>
+
             </div>
+
           </div>
-        </div>
+        )}
 
         {/* INPUT */}
 
-        <div className="px-10 pb-6">
-          <div className="bg-white/10 border border-white/10 rounded-[28px] px-6 py-4 flex items-center gap-4 backdrop-blur-2xl shadow-xl">
-            <button className="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center hover:bg-purple-500/30 transition-all">
-              <Mic size={22} />
-            </button>
+        <ChatInput
 
-            <input
-              type="text"
-              placeholder="Ask MedIntel AI..."
-              value={input}
-              onChange={(e) =>
-                setInput(e.target.value)
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  askAI()
-                }
-              }}
-              className="flex-1 bg-transparent outline-none text-lg placeholder:text-gray-500"
-            />
+          message={message}
 
-            <button
-              onClick={askAI}
-              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 font-bold text-lg hover:scale-105 transition-all shadow-xl shadow-purple-500/20 flex items-center gap-2"
-            >
-              <Send size={18} />
-              Ask AI
-            </button>
-          </div>
-        </div>
-      </div>
+          setMessage={setMessage}
 
-      {/* RIGHT PANEL */}
+          onSend={sendMessage}
 
-      <div className="w-[520px] bg-[#091225] border-l border-white/10 p-5 overflow-y-auto">
-        <div className="space-y-6">
-          {/* DRUG CHECKER */}
+          startListening={
+            startListening
+          }
 
-          <div className="bg-white/[0.03] border border-purple-500/20 rounded-[30px] p-5 shadow-xl">
-            <div className="flex items-center gap-4 mb-5">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                <Pill size={24} />
-              </div>
+          onImageUpload={
+            handleImageUpload
+          }
 
-              <div>
-                <h2 className="text-3xl font-black">
-                  Drug Checker
-                </h2>
+          isListening={
+            isListening
+          }
 
-                <p className="text-gray-400 text-sm mt-1">
-                  AI-powered medication analysis
-                </p>
-              </div>
-            </div>
+        />
 
-            <input
-              type="text"
-              placeholder="Enter medication..."
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-base outline-none mb-5"
-            />
+      </MainLayout>
 
-            <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 font-bold text-xl shadow-lg shadow-purple-500/20 hover:scale-[1.02] transition-all">
-              Check Drug
-            </button>
-          </div>
+      {/* MODALS */}
 
-          {/* REPORT */}
+      <ReportModal
 
-          <div className="bg-white/[0.03] border border-purple-500/20 rounded-[30px] p-5 shadow-xl">
-            <div className="flex items-center gap-4 mb-5">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                <FileText size={24} />
-              </div>
+        open={reportOpen}
 
-              <div>
-                <h2 className="text-3xl font-black">
-                  Report Analysis
-                </h2>
+        onClose={() =>
+          setReportOpen(false)
+        }
 
-                <p className="text-gray-400 text-sm mt-1">
-                  Upload and analyze reports
-                </p>
-              </div>
-            </div>
+      />
 
-            <input
-              type="file"
-              className="mb-5 text-sm"
-            />
+      <DrugModal
 
-            <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 font-bold text-xl shadow-lg shadow-purple-500/20 hover:scale-[1.02] transition-all">
-              Analyze Report
-            </button>
-          </div>
+        open={drugOpen}
 
-          {/* BMI */}
+        onClose={() =>
+          setDrugOpen(false)
+        }
 
-          <div className="bg-white/[0.03] border border-purple-500/20 rounded-[30px] p-5 shadow-xl">
-            <div className="flex items-center gap-4 mb-5">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                <Calculator size={24} />
-              </div>
+      />
 
-              <div>
-                <h2 className="text-3xl font-black">
-                  BMI Calculator
-                </h2>
+      <BMIModal
 
-                <p className="text-gray-400 text-sm mt-1">
-                  Calculate body mass index
-                </p>
-              </div>
-            </div>
+        open={bmiOpen}
 
-            <button className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-600 font-bold text-xl shadow-lg shadow-purple-500/20 hover:scale-[1.02] transition-all">
-              Calculate BMI
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+        onClose={() =>
+          setBMIOpen(false)
+        }
+
+      />
+
+    </>
+
+  );
 }
-
-export default App

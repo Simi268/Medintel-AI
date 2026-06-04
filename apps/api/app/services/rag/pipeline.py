@@ -1,8 +1,17 @@
 from app.services.rag.retriever import retriever
 from app.services.llm.groq_client import client
+from app.models.chat import Message
 
 
-def ask_medical_question(question: str):
+def ask_medical_question(
+    question,
+    language="English",
+    conversation_id=None,
+    db=None
+):
+    # =====================================================
+    # SMALL TALK
+    # =====================================================
 
     small_talk = [
         "hi",
@@ -11,97 +20,242 @@ def ask_medical_question(question: str):
         "hii",
         "good morning",
         "good evening",
-        "how are you",
-        "yo"
+        "how are you"
     ]
 
     if question.lower().strip() in small_talk:
-        return "Hello 👋 How can I help you with your health today?"
+        return (
+            "Hey there 👋\n\n"
+            "I’m MedIntel AI — your smart healthcare assistant.\n\n"
+            "You can ask me about:\n"
+            "• symptoms 🤒\n"
+            "• medicines 💊\n"
+            "• medical reports 🩺\n"
+            "• fitness 🏃\n"
+            "• wellness 💜"
+        )
 
-    docs = retriever.invoke(question)
+    # =====================================================
+    # RETRIEVE CONTEXT
+    # =====================================================
+
+    docs = retriever.invoke(question[:300])
+
+    # =====================================================
+    # FILTER RELEVANT DOCS
+    # =====================================================
+
+    filtered_docs = []
+
+    for doc in docs:
+        content = doc.page_content.lower()
+
+        if any(
+            keyword in content
+            for keyword in question.lower().split()
+        ):
+            filtered_docs.append(doc)
+
+    # =====================================================
+    # BUILD CONTEXT
+    # =====================================================
 
     context = "\n".join(
-        [doc.page_content for doc in docs]
+        [doc.page_content for doc in filtered_docs[:4]]
     )
+
+    # =====================================================
+    # CONVERSATION MEMORY
+    # =====================================================
+
+    previous_messages = []
+
+    if conversation_id and db:
+        previous_messages = (
+            db.query(Message)
+            .filter(Message.conversation_id == conversation_id)
+            .order_by(Message.created_at.asc())
+            .all()
+        )
+
+    # =====================================================
+    # FALLBACK CONTEXT
+    # =====================================================
 
     if not context.strip():
         context = """
         General healthcare information about:
-        fever, dengue, thyroid disorders,
-        PCOS, diabetes, hypertension,
-        infections, dizziness, nausea,
-        headaches, fatigue.
+
+        fever,
+        dengue,
+        thyroid disorders,
+        PCOS,
+        diabetes,
+        hypertension,
+        infections,
+        dizziness,
+        nausea,
+        headaches,
+        fatigue,
+        allergies,
+        fractures,
+        viral infections,
+        burns,
+        skin conditions,
+        chest pain.
         """
+
+    # =====================================================
+    # AI PROMPT
+    # =====================================================
+
     prompt = f"""
+You are MedIntel AI — a smart, modern, emotionally intelligent healthcare assistant.
 
-You are MedIntel AI,
-an intelligent and conversational healthcare assistant.
+Answer in {language} language.
 
-Talk naturally like ChatGPT.
-
-Do NOT sound robotic, textbook-like, or overly formatted.
-
-Keep responses:
-- natural
-- human
-- conversational
-- informative
+Your personality should feel:
+- warm
 - supportive
+- conversational
+- intelligent
+- calm
+- human-like
 
-Avoid:
-- too many bullet points
-- excessive formatting
-- overly short answers
-- repetitive medical explanations
+You should sound like:
+- a premium AI healthcare assistant
+- a caring medical guide
+- a smart health companion
 
-User Question:
+DO NOT sound like:
+- a textbook
+- Wikipedia
+- a medical journal
+- a robotic chatbot
+- a hospital discharge summary
+
+=====================================================
+RESPONSE STYLE
+=====================================================
+
+- Write naturally like ChatGPT Premium.
+- Use clean spacing between ideas.
+- Use occasional relevant emojis naturally 🤒💜🩺
+- Keep the tone modern and friendly.
+- Avoid huge walls of text.
+- Avoid excessive markdown formatting.
+- DO NOT use headings like ### or ##.
+- DO NOT overuse bullet points.
+- Keep bullet points short and readable.
+- Explain medical ideas in simple language.
+- Keep responses emotionally supportive.
+
+=====================================================
+MEDICAL RESPONSE GUIDELINES
+=====================================================
+
+- Explain symptoms clearly.
+- Mention possible causes.
+- Mention associated symptoms to monitor.
+- Explain warning signs calmly.
+- Suggest practical self-care tips.
+- Mention when professional medical help may be needed.
+- Never claim a diagnosis with certainty.
+- Avoid fear-inducing language.
+
+=====================================================
+FOLLOW-UP QUESTION HANDLING
+=====================================================
+
+If the user asks follow-up questions like:
+- "what should I do?"
+- "what medicine?"
+- "home remedy?"
+- "is this dangerous?"
+- "can I apply anything?"
+- "what ointment should I use?"
+
+Use the earlier medical context and continue the conversation naturally.
+
+=====================================================
+RESPONSE LENGTH
+=====================================================
+
+- Usually between 150–350 words.
+- Short questions can have shorter answers.
+- Serious medical concerns can have more detailed explanations.
+- Avoid repetitive explanations.
+
+=====================================================
+AVOID THESE AI PHRASES
+=====================================================
+
+DO NOT say:
+- "Certainly!"
+- "I'd be happy to help!"
+- "As an AI..."
+- "It is important to note..."
+
+=====================================================
+GOOD RESPONSE STYLE EXAMPLE
+=====================================================
+
+"Dengue symptoms usually begin with high fever, body pain, weakness, and severe headaches 🤒.
+
+Some people also notice:
+• joint pain
+• skin rash
+• nausea
+• pain behind the eyes
+
+Since dengue can sometimes affect platelet levels, staying hydrated and monitoring symptoms is really important 💜
+
+If you notice breathing difficulty, persistent vomiting, bleeding, or extreme weakness, medical attention is recommended."
+
+=====================================================
+
+Question:
 {question}
 
 Medical Context:
 {context}
-
-Instructions:
-- Answer like a real assistant talking to a person
-- Write in smooth conversational  bullet 
-- USE BULLETS
-- Use less emojis
-- Explain clearly but naturally
-- Keep answers engaging and easy to read
-- Be empathetic and supportive
-- If needed, gently advise seeing a doctor
-- Do not overload with unnecessary details
-
-Examples of GOOD style:
-
-User:
-"What are asthma symptoms?"
-
-Assistant:
-"Asthma symptoms usually include shortness of breath, wheezing, chest tightness, and frequent coughing — especially at night or after physical activity. Some people also feel like they can’t take a deep breath properly.
-
-Symptoms can range from mild to severe, so if breathing becomes difficult or symptoms happen often, it’s important to speak with a doctor."
-
-User:
-"Why do I feel dizzy?"
-
-Assistant:
-"Dizziness can happen for many reasons, including dehydration, low blood sugar, stress, lack of sleep, or sometimes inner ear problems. If it happens frequently, along with chest pain, fainting, or blurred vision, it’s best to get medical advice."
-
-Now answer naturally.
 """
 
+    # =====================================================
+    # LLM MESSAGES
+    # =====================================================
+
+    messages = [
+        {
+            "role": "system",
+            "content": prompt
+        }
+    ]
+
+    # OLD CHAT HISTORY
+
+    for msg in previous_messages:
+        messages.append({
+            "role": msg.role,
+            "content": msg.content
+        })
+
+    # CURRENT QUESTION
+
+    messages.append({
+        "role": "user",
+        "content": question
+    })
+
+    # =====================================================
+    # LLM CALL
+    # =====================================================
 
     completion = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=[
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
-        temperature=0.5,
-        max_tokens=500,
+        messages=messages,
+        temperature=0.7,
+        max_tokens=700,
     )
 
     return completion.choices[0].message.content
-
