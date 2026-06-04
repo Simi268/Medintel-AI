@@ -94,6 +94,7 @@ MedIntel AI includes:
 
 * Groq API
 * Llama 3.3 70B Versatile
+* Llama 4 Scout 17B Instruct
 * LangChain
 * RAG (Retrieval Augmented Generation)
 
@@ -104,6 +105,43 @@ MedIntel AI includes:
 * PyMuPDF
 * PDF2Image
 * Poppler
+
+---
+
+##🧠 AI Architecture
+1. Medical Chat Assistant
+
+User Question
+↓
+LangChain Retriever
+↓
+Medical Knowledge Base
+↓
+Llama 3.3 70B
+↓
+Context-Aware Response
+
+2. Medical Report Analysis
+
+Report Upload
+↓
+OCR Extraction
+↓
+Structured Medical Data Extraction
+↓
+Llama 4 Scout
+↓
+Patient-Friendly Report Summary
+
+3. Drug Interaction Analysis
+
+Medication Input
+↓
+Medical Context Processing
+↓
+Llama 3.3 70B
+↓
+Safety & Interaction Guidance
 
 ---
 
