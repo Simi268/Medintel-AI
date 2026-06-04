@@ -1,22 +1,29 @@
 fastapi
 uvicorn
 python-dotenv
-langchain-huggingface
-langchain-qdrant
-langchain-text-splitters
-qdrant-client
-sentence-transformers
-pypdf
+
+sqlalchemy
+
+passlib[bcrypt]
+python-jose[cryptography]
 
 langchain
 langchain-community
+langchain-huggingface
+langchain-qdrant
+langchain-text-splitters
+
+qdrant-client
+sentence-transformers
+pypdf
+tiktoken
 
 groq
 
-qdrant-client
+pytesseract
+pdf2image
+PyMuPDF
+opencv-python-headless
+Pillow
 
-pypdf
-
-sentence-transformers
-
-tiktoken
+python-multipart
