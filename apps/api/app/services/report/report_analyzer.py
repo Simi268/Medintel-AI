@@ -19,9 +19,10 @@ if os.name == "nt":
     )
     POPPLER_PATH = (
     r"C:\Users\simi\Downloads\Release-26.02.0-0\poppler-26.02.0\Library\bin"
-)
+    )
+if os.name == "nt":
+    os.environ["PATH"] += os.pathsep + POPPLER_PATH
 
-os.environ["PATH"] += os.pathsep + POPPLER_PATH
 
 
 # ====================================================
