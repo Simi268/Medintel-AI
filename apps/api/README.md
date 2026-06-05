@@ -72,7 +72,7 @@ uvicorn app.main:app --reload
 ## API Docs
 
 ```text
-http://127.0.0.1:8000/docs
+https://medintel-ai-75k0.onrender.com/docs
 ```
 
 ## Current Status

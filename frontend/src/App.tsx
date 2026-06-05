@@ -108,7 +108,7 @@ export default function App() {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/chat/conversations?user_id=${userId}`
+        `https://medintel-ai-75k0.onrender.com/chat/conversations?user_id=${userId}`
 
       );
 
@@ -133,7 +133,7 @@ export default function App() {
     try {
 
       const response = await fetch(
-        `http://127.0.0.1:8000/chat/messages/${id}`
+        `/chat/messages/${id}`
       );
 
       const data = await response.json();
@@ -167,7 +167,7 @@ export default function App() {
 
       const response = await fetch(
 
-        `http://127.0.0.1:8000/chat/conversation?question=${encodeURIComponent(question)}&user_id=${userId}`,
+        `https://medintel-ai-75k0.onrender.com/chat/conversation?question=${encodeURIComponent(question)}&user_id=${userId}`,
 
         {
           method: "POST",
@@ -200,7 +200,7 @@ export default function App() {
 
       await fetch(
 
-        `http://127.0.0.1:8000/chat/conversation/${id}`,
+        `https://medintel-ai-75k0.onrender.com/chat/conversation/${id}`,
 
         {
           method: "DELETE",
@@ -243,7 +243,7 @@ export default function App() {
 
       await fetch(
 
-        "http://127.0.0.1:8000/chat/message"
+        "https://medintel-ai-75k0.onrender.com/chat/message"
         + `?conversation_id=${convoId}`
         + `&role=${role}`
         + `&content=${encodeURIComponent(content)}`,
@@ -403,7 +403,7 @@ export default function App() {
 
         const response =
           await fetch(
-            "http://127.0.0.1:8000/vision/analyze",
+            "https://medintel-ai-75k0.onrender.com/vision/analyze",
             {
               method: "POST",
               body: formData,
@@ -425,7 +425,7 @@ export default function App() {
 
         await fetch(
 
-          `http://127.0.0.1:8000/chat/conversation/${convoId}?title=${encodeURIComponent(smartTitle)}`,
+          `https://medintel-ai-75k0.onrender.com/chat/conversation/${convoId}?title=${encodeURIComponent(smartTitle)}`,
 
           {
             method: "PUT",
