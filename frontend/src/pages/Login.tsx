@@ -53,7 +53,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-10 relative overflow-hidden">
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4 md:px-10 py-6 relative overflow-hidden">
 
       {/* Floating particles */}
       <div className="absolute top-10 left-10 w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse" />
@@ -71,25 +71,29 @@ export default function Login() {
       {/* Main Card */}
       <div
         className="
-          w-[1300px]
-          min-h-[850px]
-          rounded-[60px]
+          w-full
+          max-w-[1300px]
+          min-h-auto
+          md:min-h-[850px]
+          rounded-[32px]
+          md:rounded-[60px]
           border
           border-fuchsia-500/20
           bg-[#0b1220]/80
           backdrop-blur-xl
-          p-20
+          p-6
+          md:p-20
           shadow-2xl
           relative
           z-10
         "
       >
         {/* Header */}
-        <h1 className="text-8xl font-black text-white">
+        <h1 className="text-4xl sm:text-5xl md:text-8xl font-black text-white">
           MedIntel AI
         </h1>
 
-        <p className="text-2xl text-gray-400 mt-8 leading-relaxed max-w-4xl">
+        <p className="text-base sm:text-lg md:text-2xl text-gray-400 mt-4 md:mt-8 leading-relaxed max-w-4xl">
           AI-powered medical intelligence platform for disease insights,
           predictive risk analysis, report interpretation, medication
           safety analysis, and clinical decision support.
@@ -105,14 +109,19 @@ export default function Login() {
           }
           className="
             w-full
-            mt-14
-            rounded-3xl
+            mt-8
+            md:mt-14
+            rounded-2xl
+            md:rounded-3xl
             bg-[#141a2f]
             border
             border-white/10
-            px-8
-            py-7
-            text-2xl
+            px-5
+            md:px-8
+            py-4
+            md:py-7
+            text-base
+            md:text-2xl
             text-white
             placeholder:text-gray-400
             outline-none
@@ -130,14 +139,19 @@ export default function Login() {
           }
           className="
             w-full
-            mt-6
-            rounded-3xl
+            mt-4
+            md:mt-6
+            rounded-2xl
+            md:rounded-3xl
             bg-[#141a2f]
             border
             border-white/10
-            px-8
-            py-7
-            text-2xl
+            px-5
+            md:px-8
+            py-4
+            md:py-7
+            text-base
+            md:text-2xl
             text-white
             placeholder:text-gray-400
             outline-none
@@ -151,13 +165,17 @@ export default function Login() {
           onClick={handleLogin}
           className="
             w-full
-            mt-8
-            rounded-3xl
+            mt-6
+            md:mt-8
+            rounded-2xl
+            md:rounded-3xl
             bg-gradient-to-r
             from-purple-500
             to-pink-500
-            py-7
-            text-3xl
+            py-4
+            md:py-7
+            text-lg
+            md:text-3xl
             font-black
             text-white
             hover:scale-[1.01]
@@ -171,25 +189,27 @@ export default function Login() {
         {/* Demo Section */}
         <div
           className="
-            mt-10
+            mt-8
+            md:mt-10
             rounded-3xl
             bg-black/20
             border
             border-fuchsia-500/20
-            p-8
+            p-5
+            md:p-8
           "
         >
-          <h2 className="text-3xl font-bold text-white">
+          <h2 className="text-xl md:text-3xl font-bold text-white">
             Demo Access
           </h2>
 
-          <p className="text-xl text-gray-400 mt-3">
+          <p className="text-sm md:text-xl text-gray-400 mt-3">
             Visitors can instantly explore
             MedIntel AI using the public demo account.
           </p>
 
-          <div className="mt-6 space-y-4">
-            <p className="text-2xl">
+          <div className="mt-6 space-y-3 md:space-y-4">
+            <p className="text-base md:text-2xl">
               <span className="font-bold text-white">
                 Demo Email:
               </span>{" "}
@@ -198,7 +218,7 @@ export default function Login() {
               </span>
             </p>
 
-            <p className="text-2xl">
+            <p className="text-base md:text-2xl">
               <span className="font-bold text-white">
                 Password:
               </span>{" "}
@@ -211,13 +231,17 @@ export default function Login() {
           <button
             onClick={fillDemo}
             className="
-              mt-8
+              mt-6
+              md:mt-8
               rounded-2xl
               border
               border-fuchsia-500/30
-              px-8
-              py-4
-              text-xl
+              px-5
+              md:px-8
+              py-3
+              md:py-4
+              text-sm
+              md:text-xl
               text-fuchsia-400
               hover:bg-fuchsia-500/10
               transition-all
@@ -228,10 +252,10 @@ export default function Login() {
         </div>
 
         {/* Footer */}
-        <div className="mt-10 text-center text-gray-500 text-lg">
+        <div className="mt-8 md:mt-10 text-center text-gray-500 text-xs md:text-lg">
           Public demo access available for visitors.
         </div>
       </div>
     </div>
   );
-}            
+}
