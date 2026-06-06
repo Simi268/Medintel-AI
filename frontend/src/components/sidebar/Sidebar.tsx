@@ -36,8 +36,7 @@ export default function Sidebar({
   onDeleteConversation,
 }: Props) {
   return (
-    <div className="h-full flex flex-col bg-[#040816] text-white p-3 md:p-5">
-
+    <div className="h-full flex flex-col bg-[#040816] text-white p-5 overflow-y-auto">
       {/* ================================================= */}
       {/* LOGO */}
       {/* ================================================= */}

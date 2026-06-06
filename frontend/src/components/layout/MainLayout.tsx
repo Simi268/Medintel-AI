@@ -63,7 +63,7 @@ export default function MainLayout({
 
           {/* DRAWER */}
 
-          <div className="absolute left-0 top-0 h-full w-[320px] max-w-[85vw] bg-[#040816] border-r border-white/10">
+          <div className="absolute left-0 top-0 h-full w-[320px] max-w-[85vw] bg-[#040816] border-r border-white/10 overflow-y-auto">
 
             <div className="flex justify-end p-4">
 

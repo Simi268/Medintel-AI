@@ -41,12 +41,10 @@ export default function ChatInput({
 
   return (
 
-    <div className="border-t border-fuchsia-500/10 bg-[#060816] px-10 py-6">
+    <div className="border-t border-fuchsia-500/10 bg-[#060816] px-3 md:px-10 py-3 md:py-6">
 
       {/* INPUT CONTAINER */}
-
-      <div className="flex items-center gap-5 rounded-[36px] border border-fuchsia-500/10 bg-[#111827] px-7 py-6 shadow-[0_0_40px_rgba(217,70,239,0.08)]">
-
+      <div className="flex items-center gap-2 md:gap-5 rounded-[24px] md:rounded-[36px] border border-fuchsia-500/10 bg-[#111827] px-3 md:px-7 py-3 md:py-6 shadow-[0_0_40px_rgba(217,70,239,0.08)]">
         {/* IMAGE BUTTON */}
 
         <button
@@ -59,7 +57,7 @@ export default function ChatInput({
 
             input?.click();
           }}
-          className="w-14 h-14 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all"
+         className="w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all"
         >
 
           <Image size={22} />
@@ -80,7 +78,7 @@ export default function ChatInput({
 
         <button
           onClick={startListening}
-          className="relative w-14 h-14 rounded-2xl bg-fuchsia-500/10 hover:bg-fuchsia-500/20 border border-fuchsia-500/20 flex items-center justify-center transition-all overflow-hidden"
+          className="relative w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-fuchsia-500/10 hover:bg-fuchsia-500/20 border border-fuchsia-500/20 flex items-center justify-center transition-all overflow-hidden"
         >
 
           <Mic size={22} />
@@ -119,19 +117,20 @@ export default function ChatInput({
             }
           }}
           placeholder="Describe symptoms or ask MedIntel AI..."
-          className="flex-1 bg-transparent outline-none text-[20px] text-white placeholder:text-gray-400"
+          className="flex-1 bg-transparent outline-none text-[15px] md:text-[20px] text-white placeholder:text-gray-400"
         />
 
         {/* SEND */}
 
         <button
           onClick={onSend}
-          className="px-9 py-4 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 font-bold text-lg flex items-center gap-3 shadow-[0_0_30px_rgba(217,70,239,0.2)] hover:scale-[1.02] transition-all"
+          className="px-3 md:px-9 py-3 md:py-4 rounded-xl md:rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 font-bold text-sm md:text-lg flex items-center gap-2 md:gap-3 shadow-[0_0_30px_rgba(217,70,239,0.2)] hover:scale-[1.02] transition-all"
         >
 
           <Send size={18} />
-
-          Ask AI
+<span className="hidden md:inline">
+  Ask AI
+</span>
 
         </button>
 
