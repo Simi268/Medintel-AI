@@ -53,7 +53,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4 md:px-10 py-6 relative overflow-hidden">
+    
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4 md:px-4 md:px-10 py-6 relative overflow-hidden">
 
       {/* Floating particles */}
       <div className="absolute top-10 left-10 w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse" />
@@ -72,28 +73,28 @@ export default function Login() {
       <div
         className="
           w-full
-          max-w-[1300px]
+          max-w-full max-w-[1300px]
           min-h-auto
           md:min-h-[850px]
           rounded-[32px]
-          md:rounded-[60px]
+          md:rounded-[32px] md:rounded-[60px]
           border
           border-fuchsia-500/20
           bg-[#0b1220]/80
           backdrop-blur-xl
           p-6
-          md:p-20
+          md:p-6 md:p-20
           shadow-2xl
           relative
           z-10
         "
       >
         {/* Header */}
-        <h1 className="text-4xl sm:text-5xl md:text-8xl font-black text-white">
+        <h1 className="text-4xl sm:text-5xl md:text-4xl sm:text-5xl md:text-8xl font-black text-white">
           MedIntel AI
         </h1>
 
-        <p className="text-base sm:text-lg md:text-2xl text-gray-400 mt-4 md:mt-8 leading-relaxed max-w-4xl">
+        <p className="text-base sm:text-lg md:text-base md:text-2xl text-gray-400 mt-4 md:mt-8 leading-relaxed max-w-4xl">
           AI-powered medical intelligence platform for disease insights,
           predictive risk analysis, report interpretation, medication
           safety analysis, and clinical decision support.
@@ -117,11 +118,11 @@ export default function Login() {
             border
             border-white/10
             px-5
-            md:px-8
+            md:px-5 md:px-8
             py-4
-            md:py-7
+            md:py-4 md:py-7
             text-base
-            md:text-2xl
+            md:text-base md:text-2xl
             text-white
             placeholder:text-gray-400
             outline-none
@@ -147,11 +148,11 @@ export default function Login() {
             border
             border-white/10
             px-5
-            md:px-8
+            md:px-5 md:px-8
             py-4
-            md:py-7
+            md:py-4 md:py-7
             text-base
-            md:text-2xl
+            md:text-text-base md:text-base md:text-2xl
             text-white
             placeholder:text-gray-400
             outline-none
@@ -173,9 +174,9 @@ export default function Login() {
             from-purple-500
             to-pink-500
             py-4
-            md:py-7
+            md:py-4 md:py-7
             text-lg
-            md:text-3xl
+            md:text-lg md:text-3xl
             font-black
             text-white
             hover:scale-[1.01]
@@ -199,7 +200,7 @@ export default function Login() {
             md:p-8
           "
         >
-          <h2 className="text-xl md:text-3xl font-bold text-white">
+          <h2 className="text-xl md:text-lg md:text-3xl font-bold text-white">
             Demo Access
           </h2>
 
@@ -209,7 +210,7 @@ export default function Login() {
           </p>
 
           <div className="mt-6 space-y-3 md:space-y-4">
-            <p className="text-base md:text-2xl">
+            <p className="text-base md:text-base md:text-2xl">
               <span className="font-bold text-white">
                 Demo Email:
               </span>{" "}
@@ -218,7 +219,7 @@ export default function Login() {
               </span>
             </p>
 
-            <p className="text-base md:text-2xl">
+            <p className="text-base md:text-base md:text-2xl">
               <span className="font-bold text-white">
                 Password:
               </span>{" "}
@@ -237,7 +238,7 @@ export default function Login() {
               border
               border-fuchsia-500/30
               px-5
-              md:px-8
+              md:px-5 md:px-8
               py-3
               md:py-4
               text-sm

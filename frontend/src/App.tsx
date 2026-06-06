@@ -674,8 +674,7 @@ export default function App() {
 {/* CHAT */}
 {messages.length === 0 && !conversationId ? (
 
-<div className="flex-1 relative overflow-hidden bg-[#030712] flex items-center justify-center">
-
+<div className="flex-1 relative overflow-y-auto bg-[#030712] flex items-center justify-center px-4">
   {/* BACKGROUND */}
   <div className="absolute inset-0 overflow-hidden">
 
@@ -700,132 +699,105 @@ export default function App() {
 
   </div>
 
-  {/* HERO CONTENT */}
-  <div className="relative z-10 flex flex-col items-center">
 
-    {/* BRAIN */}
-    <div className="relative mb-12">
+{/* HERO CONTENT */}
+<div className="relative z-10 flex flex-col items-center px-4 text-center w-full max-w-7xl">
 
-      <div className="absolute inset-0 rounded-full border border-fuchsia-500/20 scale-[1.3]" />
-      <div className="absolute inset-0 rounded-full border border-fuchsia-500/10 scale-[1.6]" />
-      <div className="absolute inset-0 rounded-full border border-fuchsia-500/10 scale-[1.9]" />
+  {/* BRAIN */}
+  <div className="relative mb-8 md:mb-12">
 
-      <div className="w-32 h-32 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-[0_0_120px_rgba(217,70,239,0.55)] animate-pulse">
+    <div className="absolute inset-0 rounded-full border border-fuchsia-500/20 scale-[1.3]" />
+    <div className="absolute inset-0 rounded-full border border-fuchsia-500/10 scale-[1.6]" />
+    <div className="absolute inset-0 rounded-full border border-fuchsia-500/10 scale-[1.9]" />
 
-        <Brain
-          size={56}
-          className="text-white"
-        />
+    <div className="w-20 h-20 md:w-32 md:h-32 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center shadow-[0_0_120px_rgba(217,70,239,0.55)] animate-pulse">
 
-      </div>
-
-      {/* FLOATING ICONS */}
-
-      <div className="absolute -left-14 top-6 float-slow w-14 h-14 rounded-2xl bg-[#1f2238] border border-fuchsia-500/20 flex items-center justify-center">
-
-        <Activity
-          size={24}
-          className="text-fuchsia-400"
-        />
-
-      </div>
-
-      <div className="absolute -right-14 top-8 float-delay w-14 h-14 rounded-2xl bg-[#1f2238] border border-fuchsia-500/20 flex items-center justify-center">
-
-        <Pill
-          size={24}
-          className="text-fuchsia-400"
-        />
-
-      </div>
-
-      <div className="absolute left-1/2 -bottom-8 -translate-x-1/2 float-slow w-14 h-14 rounded-2xl bg-[#1f2238] border border-fuchsia-500/20 flex items-center justify-center">
-
-        <FileText
-          size={24}
-          className="text-fuchsia-400"
-        />
-
-      </div>
-
-    </div>
-
-    {/* TITLE */}
-
-    <h1 className="text-9xl font-black mb-5 bg-gradient-to-r from-white via-pink-200 to-fuchsia-500 bg-clip-text text-transparent">
-
-      MedIntel AI
-
-    </h1>
-
-    {/* SUBTITLE */}
-
-    <p className="text-gray-200 text-xl text-center max-w-4xl leading-relaxed mb-12">
-
-      Describe symptoms, upload reports, analyze medications
-      and receive intelligent AI-powered healthcare insights.
-
-    </p>
-
-    {/* CARDS */}
-
-    <div className="grid grid-cols-4 gap-5">
-
-      <div className="w-44 h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 hover:scale-105 transition-all flex flex-col items-center justify-center">
-
-        <Activity
-          size={26}
-          className="mb-3 text-fuchsia-400"
-        />
-
-        <span className="font-semibold">
-          Symptom Analysis
-        </span>
-
-      </div>
-
-      <div className="w-44 h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 hover:scale-105 transition-all flex flex-col items-center justify-center">
-
-        <FileText
-          size={26}
-          className="mb-3 text-fuchsia-400"
-        />
-
-        <span className="font-semibold">
-          Report Analyzer
-        </span>
-
-      </div>
-
-      <div className="w-44 h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 hover:scale-105 transition-all flex flex-col items-center justify-center">
-
-        <Pill
-          size={26}
-          className="mb-3 text-fuchsia-400"
-        />
-
-        <span className="font-semibold">
-          Drug Interaction
-        </span>
-
-      </div>
-
-      <div className="w-44 h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 hover:scale-105 transition-all flex flex-col items-center justify-center">
-
-        <Calculator
-          size={26}
-          className="mb-3 text-fuchsia-400"
-        />
-
-        <span className="font-semibold">
-          BMI Calculator
-        </span>
-
-      </div>
+      <Brain
+        size={32}
+        className="md:w-14 md:h-14 text-white"
+      />
 
     </div>
 
   </div>
+
+  {/* TITLE */}
+
+  <h1 className="text-4xl sm:text-5xl md:text-7xl xl:text-9xl font-black mb-4 md:mb-5 bg-gradient-to-r from-white via-pink-200 to-fuchsia-500 bg-clip-text text-transparent break-words">
+
+    MedIntel AI
+
+  </h1>
+
+  {/* SUBTITLE */}
+
+  <p className="text-sm md:text-xl text-center max-w-4xl leading-relaxed mb-8 md:mb-12 text-gray-200">
+
+    Describe symptoms, upload reports, analyze medications
+    and receive intelligent AI-powered healthcare insights.
+
+  </p>
+
+  {/* CARDS */}
+
+  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 w-full max-w-5xl">
+
+    <div className="w-full h-28 md:w-44 md:h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 transition-all flex flex-col items-center justify-center">
+
+      <Activity
+        size={22}
+        className="mb-2 text-fuchsia-400"
+      />
+
+      <span className="font-semibold text-xs md:text-sm text-center px-2">
+        Symptom Analysis
+      </span>
+
+    </div>
+
+    <div className="w-full h-28 md:w-44 md:h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 transition-all flex flex-col items-center justify-center">
+
+      <FileText
+        size={22}
+        className="mb-2 text-fuchsia-400"
+      />
+
+      <span className="font-semibold text-xs md:text-sm text-center px-2">
+        Report Analyzer
+      </span>
+
+    </div>
+
+    <div className="w-full h-28 md:w-44 md:h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 transition-all flex flex-col items-center justify-center">
+
+      <Pill
+        size={22}
+        className="mb-2 text-fuchsia-400"
+      />
+
+      <span className="font-semibold text-xs md:text-sm text-center px-2">
+        Drug Interaction
+      </span>
+
+    </div>
+
+    <div className="w-full h-28 md:w-44 md:h-32 rounded-3xl bg-[#171b2d]/70 backdrop-blur-xl border border-white/10 hover:border-fuchsia-500/30 transition-all flex flex-col items-center justify-center">
+
+      <Calculator
+        size={22}
+        className="mb-2 text-fuchsia-400"
+      />
+
+      <span className="font-semibold text-xs md:text-sm text-center px-2">
+        BMI Calculator
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+
 
 </div>
 
