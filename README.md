@@ -56,6 +56,13 @@ MedIntel AI is a modern AI-powered healthcare assistant designed to help users u
 * Context-aware follow-up questions
 * User-specific conversations
 
+### 🔐 Authentication
+
+- User Signup
+- User Login
+- JWT Authentication
+- Protected Routes
+- Persistent User Sessions
 ---
 
 ## 🎨 User Interface
@@ -88,7 +95,8 @@ MedIntel AI includes:
 * FastAPI
 * Python
 * SQLAlchemy
-* SQLite
+* PostgreSQL
+* JWT Authentication
 
 ### AI & Machine Learning
 
@@ -108,40 +116,32 @@ MedIntel AI includes:
 
 ---
 
-## 🧠 AI Architecture
-1. Medical Chat Assistant
+## 🧠 System Architecture
 
-User Question
--> 
-LangChain Retriever
-->
-Medical Knowledge Base
-->
-Llama 3.3 70B
-->
-Context-Aware Response
-
-2. Medical Report Analysis
-
-Report Upload
-->
-OCR Extraction
-->
-Structured Medical Data Extraction
-->
-Llama 4 Scout
-->
-Patient-Friendly Report Summary
-
-3. Drug Interaction Analysis
-
-Medication Input
-->
-Medical Context Processing
-->
-Llama 3.3 70B
-->
-Safety & Interaction Guidance
+User
+│
+├── Symptom Analysis
+├── Medical Report Upload
+├── Drug Interaction Query
+├── Medical Image Upload
+└── BMI Calculation
+        │
+        ▼
+Frontend (React + TypeScript)
+        │
+        ▼
+FastAPI Backend
+        │
+ ┌──────┼───────────┐
+ │      │           │
+ ▼      ▼           ▼
+RAG   OCR Engine   AI Models
+ │      │           │
+ ▼      ▼           ▼
+LangChain  Tesseract  Llama Models
+        │
+        ▼
+Healthcare Response
 
 ---
 
@@ -173,6 +173,7 @@ Create a `.env` file:
 
 ```env
 GROQ_API_KEY=YOUR_GROQ_API_KEY
+DATABASE_URL=YOUR_POSTGRES_DATABASE_URL
 ```
 
 Run backend:
@@ -289,5 +290,31 @@ Always consult a qualified healthcare professional for diagnosis and treatment d
 * User profile dashboard
 * Health risk prediction models
 * Voice conversations
+  
+---
+
+## 🌐 Deployment
+
+### Frontend
+- Vercel
+
+### Backend
+- Render
+
+### Database
+- PostgreSQL
+
+---
+
+## Live Demo
+
+Frontend:
+https://medintel-ai-f9gv.vercel.app
+
+Backend API:
+https://medintel-ai-75k0.onrender.com
+
+API Docs:
+https://medintel-ai-75k0.onrender.com/docs
   
 
