@@ -116,31 +116,28 @@ MedIntel AI includes:
 
 ---
 
-## 🧠 System Architecture
+## 🧠 Workflow
 
-User
-│
-├── Symptom Analysis
-├── Medical Report Upload
-├── Drug Interaction Query
-├── Medical Image Upload
-└── BMI Calculation
-        │
-        ▼
-Frontend (React + TypeScript)
-        │
-        ▼
+User Input
+
+⬇️
+
+React Frontend
+
+⬇️
+
 FastAPI Backend
-        │
- ┌──────┼───────────┐
- │      │           │
- ▼      ▼           ▼
-RAG   OCR Engine   AI Models
- │      │           │
- ▼      ▼           ▼
-LangChain  Tesseract  Llama Models
-        │
-        ▼
+
+⬇️
+
+LangChain + Medical Knowledge Base
+
+⬇️
+
+Llama Models (Groq)
+
+⬇️
+
 Healthcare Response
 
 ---
