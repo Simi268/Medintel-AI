@@ -42,8 +42,7 @@ export default function MainLayout({
     useState(false);
 
   return (
-
-    <div className="h-screen bg-[#030712] text-white flex overflow-hidden">
+    <div className="min-h-screen bg-[#030712] text-white flex overflow-x-hidden">
 
       {/* ================================================= */}
       {/* MOBILE DRAWER */}
@@ -124,7 +123,7 @@ export default function MainLayout({
       {/* CENTER */}
       {/* ================================================= */}
 
-      <div className="flex-1 flex flex-col relative overflow-hidden min-w-0">
+      <div className="flex-1 flex flex-col relative min-w-0 overflow-y-auto">
 
         {/* MOBILE HEADER */}
 

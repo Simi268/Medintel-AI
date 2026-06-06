@@ -8,7 +8,7 @@ body {
   background: #030712;
   color: white;
   font-family: Inter, sans-serif;
-  overflow: hidden;
+  min-height: 100%;
 }
 
 * {

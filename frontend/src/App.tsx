@@ -674,7 +674,7 @@ export default function App() {
 {/* CHAT */}
 {messages.length === 0 && !conversationId ? (
 
-<div className="flex-1 relative overflow-y-auto bg-[#030712] flex items-center justify-center px-4">
+<div className="flex-1 relative overflow-y-auto bg-[#030712] px-4 py-6">
   {/* BACKGROUND */}
   <div className="absolute inset-0 overflow-hidden">
 
@@ -701,7 +701,7 @@ export default function App() {
 
 
 {/* HERO CONTENT */}
-<div className="relative z-10 flex flex-col items-center px-4 text-center w-full max-w-7xl">
+<div className="relative z-10 flex flex-col items-center px-4 text-center w-full max-w-7xl mx-auto">
 
   {/* BRAIN */}
   <div className="relative mb-8 md:mb-12">

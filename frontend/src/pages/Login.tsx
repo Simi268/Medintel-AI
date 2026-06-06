@@ -54,7 +54,7 @@ export default function Login() {
 
   return (
     
-    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4 md:px-4 md:px-10 py-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[#030712] flex items-center justify-center px-4 md:px-10 py-6 relative overflow-x-hidden">
 
       {/* Floating particles */}
       <div className="absolute top-10 left-10 w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse" />
