@@ -126,34 +126,32 @@ export default function App() {
   // LOAD CONVERSATION
   // =================================================
 
-  const loadConversation = async (
-    id: number
-  ) => {
+ const loadConversation = async (id: number) => {
+  try {
+    const response = await fetch(
+      `https://medintel-ai-75k0.onrender.com/chat/messages/${id}`
+    );
 
-    try {
-
-      const response = await fetch(
-        `/chat/messages/${id}`
+    if (!response.ok) {
+      throw new Error(
+        `Failed to load conversation: ${response.status}`
       );
-
-      const data = await response.json();
-
-      const formatted = data.map(
-        (msg: any) => ({
-          role: msg.role,
-          content: msg.content,
-        })
-      );
-
-      setMessages(formatted);
-
-      setConversationId(id);
-
-    } catch (error) {
-
-      console.error(error);
     }
-  };
+
+    const data = await response.json();
+
+    const formatted = data.map((msg: any) => ({
+      role: msg.role,
+      content: msg.content,
+    }));
+
+    setMessages(formatted);
+    setConversationId(id);
+
+  } catch (error) {
+    console.error("Failed to load conversation:", error);
+  }
+};
 
   // =================================================
   // CREATE CONVERSATION
@@ -192,39 +190,36 @@ export default function App() {
   // DELETE CONVERSATION
   // =================================================
 
-  const deleteConversation = async (
-    id: number
-  ) => {
-
-    try {
-
-      await fetch(
-
-        `https://medintel-ai-75k0.onrender.com/chat/conversation/${id}`,
-
-        {
-          method: "DELETE",
-        }
-      );
-
-      setConversations((prev) =>
-        prev.filter(
-          (c) => c.id !== id
-        )
-      );
-
-      if (conversationId === id) {
-
-        setMessages([]);
-
-        setConversationId(null);
+const deleteConversation = async (id: number) => {
+  try {
+    const response = await fetch(
+      `https://medintel-ai-75k0.onrender.com/chat/conversation/${id}`,
+      {
+        method: "DELETE",
       }
+    );
 
-    } catch (error) {
-
-      console.error(error);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to delete conversation: ${response.status}`
+      );
     }
-  };
+
+    // Remove from sidebar
+    setConversations((prev) =>
+      prev.filter((c) => c.id !== id)
+    );
+
+    // If currently open, clear the chat
+    if (conversationId === id) {
+      setMessages([]);
+      setConversationId(null);
+    }
+
+  } catch (error) {
+    console.error("Failed to delete conversation:", error);
+  }
+};
 
   // =================================================
   // SAVE MESSAGE
