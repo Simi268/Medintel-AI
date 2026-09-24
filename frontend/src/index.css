@@ -2,29 +2,639 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  margin: 0;
-  padding: 0;
-  background: #030712;
-  color: white;
-  font-family: Inter, sans-serif;
-  min-height: 100%;
+/* =========================================================
+   MEDINTEL — GLOBAL HEALTHCARE THEME
+   Dark / Light
+   ========================================================= */
+
+:root {
+  /* ================= DARK ================= */
+
+  --bg-primary: #040b14;
+  --bg-secondary: #071522;
+  --bg-tertiary: #0a1b2a;
+
+  --card: rgba(13, 29, 43, 0.78);
+  --card-hover: rgba(16, 38, 52, 0.92);
+
+  --accent: #14b8a6;
+  --accent-light: #5eead4;
+  --accent-blue: #38bdf8;
+  --accent-blue-dark: #0284c7;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+
+  --border: rgba(148, 163, 184, 0.12);
+  --border-accent: rgba(20, 184, 166, 0.20);
+
+  --input-bg: rgba(13, 29, 43, 0.85);
+
+  --hero-bg: #030712;
+  --hero-card: rgba(23, 27, 45, 0.70);
+
+  --shadow-soft:
+    0 10px 30px rgba(0, 0, 0, 0.20);
+
+  --shadow-accent:
+    0 0 30px rgba(20, 184, 166, 0.10);
 }
+
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+html.light {
+  --bg-primary: #f4f9fb;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #eef7f8;
+
+  --card: rgba(255, 255, 255, 0.94);
+  --card-hover: rgba(239, 249, 250, 0.98);
+
+  --accent: #0f9f91;
+  --accent-light: #0d9488;
+  --accent-blue: #0284c7;
+  --accent-blue-dark: #0369a1;
+
+  --text-primary: #10212b;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+
+  --border: rgba(15, 23, 42, 0.10);
+  --border-accent: rgba(15, 159, 145, 0.24);
+
+  --input-bg: #ffffff;
+
+  /* IMPORTANT: entire center becomes light */
+  --hero-bg: #ffffff;
+  --hero-card: #ffffff;
+
+  --shadow-soft:
+    0 10px 30px rgba(15, 23, 42, 0.08);
+
+  --shadow-accent:
+    0 0 30px rgba(20, 184, 166, 0.10);
+}
+
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
 
 * {
   box-sizing: border-box;
 }
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+
+  zoom: 1 !important;
+  transform: none !important;
+}
+
+html {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+
+  transition:
+    background-color 250ms ease,
+    color 250ms ease;
+}
+
+body {
+  min-height: 100vh;
+
+  color: var(--text-primary);
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  background:
+    radial-gradient(
+      circle at 50% 15%,
+      rgba(20, 184, 166, 0.055),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 72% 70%,
+      rgba(56, 189, 248, 0.045),
+      transparent 32%
+    ),
+    var(--bg-primary);
+
+  transition:
+    background 250ms ease,
+    color 250ms ease;
+}
+
+
+/* =========================================================
+   LIGHT BODY
+   ========================================================= */
+
+html.light body {
+  background:
+    radial-gradient(
+      circle at 50% 15%,
+      rgba(20, 184, 166, 0.10),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 75% 70%,
+      rgba(56, 189, 248, 0.08),
+      transparent 34%
+    ),
+    var(--bg-primary);
+}
+
+
+/* =========================================================
+   TRANSITIONS
+   ========================================================= */
+
+button,
+input,
+textarea,
+select,
+[class*="rounded-"] {
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(20, 184, 166, 0.22);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 184, 166, 0.40);
+}
+
+
+/* =========================================================
+   SIDEBAR / GLOBAL DARK BACKGROUNDS
+   ========================================================= */
+
+.bg-\[\#040816\] {
+  background-color: var(--bg-primary) !important;
+}
+
+.bg-\[\#111827\] {
+  background-color: var(--card) !important;
+}
+
+.bg-\[\#151c2e\] {
+  background-color: var(--card-hover) !important;
+}
+
+
+/* =========================================================
+   MAIN CENTER BACKGROUND
+   THIS WAS THE MAIN LIGHT-MODE PROBLEM
+   ========================================================= */
+
+.bg-\[\#030712\] {
+  background-color: var(--hero-bg) !important;
+}
+
+html.light .bg-\[\#030712\] {
+  background-color: #ffffff !important;
+}
+
+
+/* =========================================================
+   HERO CARDS
+   ========================================================= */
+
+.bg-\[\#171b2d\]\/70 {
+  background-color: var(--hero-card) !important;
+}
+
+html.light .bg-\[\#171b2d\]\/70 {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+}
+
+
+/* =========================================================
+   BORDERS
+   ========================================================= */
+
+.border-white\/10 {
+  border-color: var(--border) !important;
+}
+
+.border-white\/20 {
+  border-color: rgba(148, 163, 184, 0.18) !important;
+}
+
+
+/* =========================================================
+   LIGHT MODE — BORDERS
+   ========================================================= */
+
+html.light .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.10) !important;
+}
+
+html.light .border-white\/20 {
+  border-color: rgba(15, 23, 42, 0.14) !important;
+}
+
+
+/* =========================================================
+   TEXT
+   ========================================================= */
+
+.text-white {
+  color: var(--text-primary);
+}
+
+.text-gray-200 {
+  color: var(--text-secondary) !important;
+}
+
+.text-gray-300 {
+  color: var(--text-secondary) !important;
+}
+
+.text-gray-400 {
+  color: var(--text-muted) !important;
+}
+
+.text-gray-500 {
+  color: var(--text-faint) !important;
+}
+
+
+/* =========================================================
+   LIGHT MODE TEXT
+   ========================================================= */
+
+html.light .text-white {
+  color: var(--text-primary) !important;
+}
+
+html.light .text-gray-200 {
+  color: #334155 !important;
+}
+
+html.light .text-gray-300 {
+  color: #475569 !important;
+}
+
+html.light .text-gray-400 {
+  color: #64748b !important;
+}
+
+html.light .text-gray-500 {
+  color: #94a3b8 !important;
+}
+
+
+/* =========================================================
+   HEALTHCARE COLORS
+   ========================================================= */
+
+.text-fuchsia-400,
+.text-fuchsia-300,
+.text-purple-400,
+.text-pink-400 {
+  color: var(--accent) !important;
+}
+
+html.light .text-fuchsia-400,
+html.light .text-fuchsia-300,
+html.light .text-purple-400,
+html.light .text-pink-400 {
+  color: #0f9f91 !important;
+}
+
+
+/* =========================================================
+   PURPLE/PINK BACKGROUNDS → TEAL
+   ========================================================= */
+
+.bg-purple-500\/10,
+.bg-purple-500\/15,
+.bg-fuchsia-500\/10,
+.bg-fuchsia-500\/15,
+.bg-pink-500\/10,
+.bg-pink-500\/15 {
+  background-color: rgba(20, 184, 166, 0.09) !important;
+}
+
+
+/* =========================================================
+   PURPLE/PINK BORDERS → TEAL
+   ========================================================= */
+
+.border-fuchsia-500\/20,
+.border-fuchsia-500\/30,
+.border-purple-500\/20,
+.border-purple-500\/30,
+.border-pink-500\/20 {
+  border-color: var(--border-accent) !important;
+}
+
+
+/* =========================================================
+   LOGO / GRADIENT COLORS
+   ========================================================= */
+
+.from-purple-500,
+.from-fuchsia-500,
+.from-fuchsia-400,
+.from-pink-500 {
+  --tw-gradient-from: #14b8a6 !important;
+}
+
+.to-purple-500,
+.to-fuchsia-500,
+.to-pink-500 {
+  --tw-gradient-to: #38bdf8 !important;
+}
+
+
+/* =========================================================
+   NEW CONVERSATION BUTTON
+   ========================================================= */
+
+button[class*="from-purple-500"] {
+  background-image:
+    linear-gradient(
+      110deg,
+      #14b8a6 0%,
+      #22c5b5 48%,
+      #38bdf8 100%
+    ) !important;
+
+  color: white !important;
+
+  box-shadow:
+    0 8px 28px rgba(20, 184, 166, 0.15) !important;
+}
+
+button[class*="from-purple-500"]:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 34px rgba(20, 184, 166, 0.23) !important;
+}
+
+
+/* =========================================================
+   LOGO CARD
+   ========================================================= */
+
+[class*="border-fuchsia-500\/20"] {
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      rgba(20, 184, 166, 0.13),
+      transparent 55%
+    ),
+    var(--card) !important;
+
+  border-color: rgba(20, 184, 166, 0.22) !important;
+
+  box-shadow:
+    0 0 30px rgba(20, 184, 166, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035) !important;
+}
+
+html.light [class*="border-fuchsia-500\/20"] {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(20, 184, 166, 0.08),
+      rgba(56, 189, 248, 0.10)
+    ) !important;
+
+  border-color: rgba(20, 184, 166, 0.22) !important;
+
+  box-shadow:
+    0 8px 25px rgba(15, 23, 42, 0.06) !important;
+}
+
+
+/* =========================================================
+   HERO TITLE
+   ========================================================= */
+
+html.light .bg-gradient-to-r {
+  /* Don't force all gradients globally.
+     Hero title is handled below. */
+}
+
+
+/* =========================================================
+   CENTER HERO — LIGHT MODE
+   ========================================================= */
+
+.medintel-hero {
+  background-color: var(--hero-bg);
+  color: var(--text-primary);
+}
+
+html.light .medintel-hero {
+  background: #ffffff !important;
+}
+
+html.light .medintel-hero-background .medintel-hero-glow {
+  opacity: 0 !important;
+}
+
+html.light .medintel-hero-background .animate-pulse,
+html.light .medintel-hero-background .animate-ping {
+  opacity: 0.35;
+}
+
+/* =========================================================
+   HERO GLOW
+   ========================================================= */
+
+html.light .bg-purple-500\/15,
+html.light .bg-purple-500\/10,
+html.light .bg-fuchsia-500\/10,
+html.light .bg-violet-500\/10 {
+  background-color: rgba(20, 184, 166, 0.07) !important;
+}
+
+
+/* =========================================================
+   HERO PARTICLES
+   ========================================================= */
+
+html.light .bg-fuchsia-400\/50,
+html.light .bg-purple-400\/50 {
+  background-color: rgba(15, 159, 145, 0.45) !important;
+}
+
+
+/* =========================================================
+   HERO BRAIN RINGS
+   ========================================================= */
+
+html.light [class*="border-fuchsia-500\/20"],
+html.light [class*="border-fuchsia-500\/10"] {
+  border-color: rgba(20, 184, 166, 0.20) !important;
+}
+
+
+/* =========================================================
+   HERO BRAIN
+   ========================================================= */
+
+html.light .from-purple-500.to-pink-500 {
+  background-image:
+    linear-gradient(
+      135deg,
+      #14b8a6,
+      #38bdf8
+    ) !important;
+}
+
+
+/* =========================================================
+   HERO TITLE — LIGHT MODE
+   ========================================================= */
+
+html.light h1.bg-gradient-to-r {
+  background-image:
+    linear-gradient(
+      90deg,
+      #10212b 0%,
+      #0f9f91 55%,
+      #0284c7 100%
+    ) !important;
+
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+
+/* =========================================================
+   HERO CARDS
+   ========================================================= */
+
+html.light .bg-\[\#171b2d\]\/70 {
+  color: #10212b !important;
+
+  border-color:
+    rgba(15, 159, 145, 0.16) !important;
+
+  box-shadow:
+    0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+html.light .bg-\[\#171b2d\]\/70:hover {
+  border-color:
+    rgba(15, 159, 145, 0.30) !important;
+
+  background-color:
+    rgba(255, 255, 255, 0.98) !important;
+}
+
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+html.light button[class*="bg-\[\#111827\]"] {
+  background-color: white !important;
+  color: var(--text-primary) !important;
+}
+
+html.light button[class*="bg-\[\#111827\]"]:hover {
+  background-color: #f1f9fa !important;
+}
+
+
+/* =========================================================
+   THEME OPTIONS
+   ========================================================= */
+
+html.light .hover\:bg-white\/5:hover {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+
+/* =========================================================
+   INPUT AREA
+   ========================================================= */
+
+html.light input,
+html.light textarea {
+  color: var(--text-primary) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+
+/* =========================================================
+   PREMIUM GLOW
+   ========================================================= */
+
+.medintel-glow {
+  box-shadow:
+    0 0 30px rgba(20, 184, 166, 0.12),
+    0 0 70px rgba(56, 189, 248, 0.05);
+}
+
+
+/* =========================================================
+   FLOATING ANIMATION
+   ========================================================= */
+
 @keyframes float {
   0% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-10px);
   }
 
   100% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 }
 
@@ -36,22 +646,290 @@ body {
   animation: float 4s ease-in-out infinite;
   animation-delay: 1.5s;
 }
-@keyframes glowMove {
 
+
+/* =========================================================
+   GLOW MOVEMENT
+   ========================================================= */
+
+@keyframes glowMove {
   0% {
-    transform: translate(0px,0px);
+    transform: translate(0, 0);
   }
 
   50% {
-    transform: translate(20px,-20px);
+    transform: translate(20px, -20px);
   }
 
   100% {
-    transform: translate(0px,0px);
+    transform: translate(0, 0);
   }
-
 }
 
 .glow-float {
   animation: glowMove 10s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   FADE
+   ========================================================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+::selection {
+  background: rgba(20, 184, 166, 0.30);
+  color: white;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+.medintel-hero-title {
+  background: linear-gradient(
+    90deg,
+    var(--text-primary),
+    var(--accent-blue),
+    var(--accent)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html.light .medintel-hero-title {
+  background: linear-gradient(
+    90deg,
+    #10212b,
+    #0284c7,
+    #0f9f91
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+/* =========================================================
+   LIGHT MODE — CHAT CONTENT VISIBILITY
+   Tailwind opacity variants such as text-white/70 compile
+   separately from .text-white, so they need an explicit
+   light-theme override. This keeps chat text readable on
+   the white center background.
+   ========================================================= */
+
+html.light .medintel-hero [class*="text-white/"] {
+  color: var(--text-primary) !important;
+}
+
+html.light .medintel-hero [class*="text-gray-100"] {
+  color: #1e293b !important;
+}
+
+html.light .medintel-hero [class*="text-gray-200"] {
+  color: #334155 !important;
+}
+
+html.light .medintel-hero [class*="text-gray-300"] {
+  color: #475569 !important;
+}
+
+html.light .medintel-hero [class*="text-gray-400"] {
+  color: #64748b !important;
+}
+
+/* Keep white text on actual colored action buttons. */
+html.light .medintel-hero button[class*="bg-gradient"],
+html.light .medintel-hero button[class*="from-"],
+html.light .medintel-hero button[class*="bg-teal"],
+html.light .medintel-hero button[class*="bg-cyan"] {
+  color: #ffffff !important;
+}
+
+/* =========================================================
+   LIGHT MODE — CHAT CONTENT VISIBILITY
+   The chat/welcome component uses Tailwind white/slate
+   text utilities. On a white chat surface those utilities
+   must be converted to dark readable text.
+   ========================================================= */
+
+html.light .medintel-hero,
+html.light .medintel-hero * {
+  --chat-text-primary: #10212b;
+  --chat-text-secondary: #334155;
+  --chat-text-muted: #64748b;
+}
+
+/* White text + white text with opacity */
+html.light .medintel-hero [class*="text-white"] {
+  color: #10212b !important;
+}
+
+/* Slate text utilities */
+html.light .medintel-hero .text-slate-50,
+html.light .medintel-hero .text-slate-100,
+html.light .medintel-hero .text-slate-200,
+html.light .medintel-hero .text-slate-300 {
+  color: #334155 !important;
+}
+
+html.light .medintel-hero .text-slate-400,
+html.light .medintel-hero .text-slate-500,
+html.light .medintel-hero .text-slate-600 {
+  color: #64748b !important;
+}
+
+/* Gray utilities used by chat content */
+html.light .medintel-hero .text-gray-100,
+html.light .medintel-hero .text-gray-200,
+html.light .medintel-hero .text-gray-300 {
+  color: #334155 !important;
+}
+
+html.light .medintel-hero .text-gray-400,
+html.light .medintel-hero .text-gray-500,
+html.light .medintel-hero .text-gray-600 {
+  color: #64748b !important;
+}
+
+/* Explicit opacity variants generated by Tailwind */
+html.light .medintel-hero [class*="text-white/"] {
+  color: #334155 !important;
+}
+
+html.light .medintel-hero [class*="text-slate-"] {
+  color: #334155 !important;
+}
+
+/* Keep buttons and accent controls readable */
+html.light .medintel-hero button[class*="bg-"],
+html.light .medintel-hero button[class*="gradient"],
+html.light .medintel-hero button[class*="from-"] {
+  color: #ffffff !important;
+}
+
+/* Welcome/chat bubble text should always be readable in light mode */
+html.light .medintel-hero p,
+html.light .medintel-hero span,
+html.light .medintel-hero li,
+html.light .medintel-hero div {
+  color: #334155;
+}
+
+/* Restore accent/icon colors after the broad text rule above */
+html.light .medintel-hero .text-fuchsia-300,
+html.light .medintel-hero .text-fuchsia-400,
+html.light .medintel-hero .text-purple-300,
+html.light .medintel-hero .text-purple-400,
+html.light .medintel-hero .text-pink-300,
+html.light .medintel-hero .text-pink-400,
+html.light .medintel-hero .text-cyan-300,
+html.light .medintel-hero .text-cyan-400,
+html.light .medintel-hero .text-teal-300,
+html.light .medintel-hero .text-teal-400 {
+  color: #0f9f91 !important;
+}
+
+/* Do not let the generic div/span rule affect the main hero title */
+html.light .medintel-hero h1 {
+  color: transparent;
+}
+
+/* Chat controls: readable labels on their light buttons */
+html.light .medintel-hero button:not([class*="bg-"]):not([class*="from-"]) {
+  color: #334155 !important;
+}
+
+/* =========================================================
+   LIGHT MODE — ACTUAL CHAT WINDOW
+   ChatWindow is rendered by MainLayout's CENTER column,
+   outside .medintel-hero. Target that center column directly.
+   ========================================================= */
+
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto {
+  color: #10212b !important;
+}
+
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto [class*="text-white"],
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto [class*="text-white/"] {
+  color: #10212b !important;
+}
+
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-slate-50,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-slate-100,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-slate-200,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-slate-300,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-gray-100,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-gray-200,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-gray-300 {
+  color: #334155 !important;
+}
+
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-slate-400,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-slate-500,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-gray-400,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto .text-gray-500 {
+  color: #64748b !important;
+}
+
+/* Tailwind arbitrary/opacity text utilities */
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto [class*="text-slate-"] {
+  color: #334155 !important;
+}
+
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto [class*="text-gray-"] {
+  color: #475569 !important;
+}
+
+/* Chat bubble itself: white/light surface + dark readable content */
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto [class*="bg-[#111827]"] {
+  background-color: #ffffff !important;
+  color: #10212b !important;
+}
+
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto [class*="bg-[#111827]"] p,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto [class*="bg-[#111827]"] span,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto [class*="bg-[#111827]"] div,
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto [class*="bg-[#111827]"] li {
+  color: #334155 !important;
+}
+
+/* Never turn colored action buttons into dark text */
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto button[class*="bg-"] {
+  color: #10212b !important;
+}
+
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto button[class*="from-"],
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto button[class*="bg-gradient"],
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto button[class*="bg-teal"],
+html.light .flex-1.flex.flex-col.relative.min-w-0.overflow-y-auto button[class*="bg-cyan"] {
+  color: #ffffff !important;
 }

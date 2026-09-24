@@ -46,9 +46,7 @@ export default function App() {
   // =================================================
 
   const userId =
-    Number(
-      localStorage.getItem("user_id")
-    );
+      localStorage.getItem("user_id");
 
   // =================================================
   // STATES
@@ -102,26 +100,59 @@ export default function App() {
   // FETCH CONVERSATIONS
   // =================================================
 
-  const fetchConversations = async () => {
+const fetchConversations = async () => {
+  try {
+    const storedUserId = localStorage.getItem("user_id");
 
-    try {
+    console.log("MEDINTEL USER ID:", storedUserId);
 
-      const response = await fetch(
+    if (!storedUserId) {
+      console.error("No user_id found in localStorage");
+      setConversations([]);
+      return;
+    }
 
-        `https://medintel-ai-75k0.onrender.com/chat/conversations?user_id=${userId}`
+    const response = await fetch(
+      `https://medintel-ai-75k0.onrender.com/chat/conversations?user_id=${storedUserId}`
+    );
 
+    console.log(
+      "CONVERSATIONS STATUS:",
+      response.status
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+
+      console.error(
+        "Failed to fetch conversations:",
+        errorText
       );
 
-      const data = await response.json();
-
-      setConversations(data);
-
-    } catch (error) {
-
-      console.error(error);
+      setConversations([]);
+      return;
     }
-  };
 
+    const data = await response.json();
+
+    console.log(
+      "CONVERSATIONS FROM BACKEND:",
+      data
+    );
+
+    setConversations(
+      Array.isArray(data) ? data : []
+    );
+
+  } catch (error) {
+    console.error(
+      "Conversation history error:",
+      error
+    );
+
+    setConversations([]);
+  }
+};
   // =================================================
   // LOAD CONVERSATION
   // =================================================
@@ -669,21 +700,21 @@ const deleteConversation = async (id: number) => {
 {/* CHAT */}
 {messages.length === 0 && !conversationId ? (
 
-<div className="flex-1 relative overflow-y-auto bg-[#030712] px-4 py-6">
+<div className="medintel-hero flex-1 min-h-0 relative overflow-y-auto px-4 py-6" style={{ backgroundColor: "var(--hero-bg)", color: "var(--text-primary)" }}>
   {/* BACKGROUND */}
-  <div className="absolute inset-0 overflow-hidden">
+  <div className="medintel-hero-background absolute inset-0 overflow-hidden">
 
     {/* CENTER GLOW */}
-    <div className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 bg-purple-500/15 blur-[220px] rounded-full glow-float" />
+    <div className="medintel-hero-glow absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2 bg-purple-500/15 blur-[220px] rounded-full glow-float" />
 
     {/* TOP LEFT GLOW */}
-    <div className="absolute top-10 left-1/4 w-[450px] h-[450px] bg-fuchsia-500/10 blur-[180px] rounded-full glow-float" />
+    <div className="medintel-hero-glow absolute top-10 left-1/4 w-[450px] h-[450px] bg-fuchsia-500/10 blur-[180px] rounded-full glow-float" />
 
     {/* BOTTOM RIGHT GLOW */}
-    <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/10 blur-[180px] rounded-full glow-float" />
+    <div className="medintel-hero-glow absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/10 blur-[180px] rounded-full glow-float" />
 
     {/* EXTRA PURPLE HAZE */}
-    <div className="absolute top-1/3 right-1/3 w-[300px] h-[300px] bg-violet-500/10 blur-[160px] rounded-full glow-float" />
+    <div className="medintel-hero-glow absolute top-1/3 right-1/3 w-[300px] h-[300px] bg-violet-500/10 blur-[160px] rounded-full glow-float" />
 
     {/* PARTICLES */}
     <div className="absolute top-12 left-12 w-2 h-2 bg-fuchsia-400/50 rounded-full animate-pulse" />
@@ -718,7 +749,7 @@ const deleteConversation = async (id: number) => {
 
   {/* TITLE */}
 
-  <h1 className="text-4xl sm:text-5xl md:text-7xl xl:text-9xl font-black mb-4 md:mb-5 bg-gradient-to-r from-white via-pink-200 to-fuchsia-500 bg-clip-text text-transparent break-words">
+  <h1 className="medintel-hero-title text-4xl sm:text-5xl md:text-7xl xl:text-9xl font-black mb-4 md:mb-5 bg-gradient-to-r from-white via-pink-200 to-fuchsia-500 bg-clip-text text-transparent break-words">
 
     MedIntel AI
 

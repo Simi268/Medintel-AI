@@ -5,7 +5,12 @@ import {
   Settings,
   LogOut,
   ChevronRight,
+  Sun,
+  Moon,
+  Check,
 } from "lucide-react";
+
+import { useEffect, useState } from "react";
 
 // =================================================
 // TYPES
@@ -25,6 +30,8 @@ interface Props {
   ) => void;
 }
 
+type Theme = "dark" | "light";
+
 // =================================================
 // COMPONENT
 // =================================================
@@ -35,8 +42,60 @@ export default function Sidebar({
   onNewConversation,
   onDeleteConversation,
 }: Props) {
+  // =================================================
+  // THEME
+  // =================================================
+
+  const [theme, setTheme] = useState<Theme>(() => {
+    const savedTheme = localStorage.getItem(
+      "medintel-theme"
+    );
+
+    return savedTheme === "light"
+      ? "light"
+      : "dark";
+  });
+
+  const [showThemeOptions, setShowThemeOptions] =
+    useState(false);
+
+  // =================================================
+  // APPLY THEME
+  // =================================================
+
+  useEffect(() => {
+    const root =
+      document.documentElement;
+
+    if (theme === "light") {
+      root.classList.add("light");
+    } else {
+      root.classList.remove("light");
+    }
+
+    localStorage.setItem(
+      "medintel-theme",
+      theme
+    );
+  }, [theme]);
+
+  // =================================================
+  // THEME CHANGE
+  // =================================================
+
+  const changeTheme = (
+    selectedTheme: Theme
+  ) => {
+    setTheme(selectedTheme);
+  };
+
+  // =================================================
+  // COMPONENT
+  // =================================================
+
   return (
     <div className="h-full flex flex-col bg-[#040816] text-white p-5 overflow-y-auto">
+
       {/* ================================================= */}
       {/* LOGO */}
       {/* ================================================= */}
@@ -45,9 +104,12 @@ export default function Sidebar({
 
         <div className="flex items-center gap-3 md:gap-4">
 
-          <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 flex items-center justify-center shadow-lg">
+          <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-r from-teal-500 to-sky-400 flex items-center justify-center shadow-lg">
 
-            <Brain size={24} className="md:w-7 md:h-7" />
+            <Brain
+              size={24}
+              className="md:w-7 md:h-7"
+            />
 
           </div>
 
@@ -91,9 +153,11 @@ export default function Sidebar({
           transition-all
         "
       >
+
         <Plus size={20} />
 
         New Conversation
+
       </button>
 
       {/* ================================================= */}
@@ -116,57 +180,61 @@ export default function Sidebar({
 
           )}
 
-          {conversations.map((conversation) => (
-
-            <div
-              key={conversation.id}
-              className="group rounded-[24px] md:rounded-[28px] border border-white/10 bg-[#111827] hover:border-fuchsia-500/30 hover:bg-[#151c2e] transition-all cursor-pointer"
-            >
+          {conversations.map(
+            (conversation) => (
 
               <div
-                onClick={() =>
-                  onSelectConversation(
-                    conversation.id
-                  )
-                }
-                className="p-3 md:p-5 flex items-center justify-between"
+                key={conversation.id}
+                className="group rounded-[24px] md:rounded-[28px] border border-white/10 bg-[#111827] hover:border-fuchsia-500/30 hover:bg-[#151c2e] transition-all cursor-pointer"
               >
 
-                <div className="flex-1 min-w-0">
+                <div
+                  onClick={() =>
+                    onSelectConversation(
+                      conversation.id
+                    )
+                  }
+                  className="p-3 md:p-5 flex items-center justify-between"
+                >
 
-                  <h3 className="font-semibold text-[14px] md:text-[18px] truncate text-white">
-                    {conversation.title}
-                  </h3>
+                  <div className="flex-1 min-w-0">
 
-                </div>
+                    <h3 className="font-semibold text-[14px] md:text-[18px] truncate text-white">
+                      {conversation.title}
+                    </h3>
 
-                <div className="flex items-center gap-2 md:gap-3 ml-3 md:ml-4">
+                  </div>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                  <div className="flex items-center gap-2 md:gap-3 ml-3 md:ml-4">
 
-                      onDeleteConversation(
-                        conversation.id
-                      );
-                    }}
-                    className="opacity-0 group-hover:opacity-100 transition-all text-red-400 hover:text-red-300"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
 
-                  <ChevronRight
-                    size={16}
-                    className="text-gray-500"
-                  />
+                        onDeleteConversation(
+                          conversation.id
+                        );
+                      }}
+                      className="opacity-0 group-hover:opacity-100 transition-all text-red-400 hover:text-red-300"
+                    >
+
+                      <Trash2 size={16} />
+
+                    </button>
+
+                    <ChevronRight
+                      size={16}
+                      className="text-gray-500"
+                    />
+
+                  </div>
 
                 </div>
 
               </div>
 
-            </div>
-
-          ))}
+            )
+          )}
 
         </div>
 
@@ -178,7 +246,14 @@ export default function Sidebar({
 
       <div className="mt-4 md:mt-5">
 
-        <button className="w-full rounded-[24px] md:rounded-[28px] border border-white/10 bg-[#111827] hover:bg-[#151c2e] transition-all p-4 md:p-5 flex items-center gap-3 md:gap-4">
+        <button
+          onClick={() =>
+            setShowThemeOptions(
+              !showThemeOptions
+            )
+          }
+          className="w-full rounded-[24px] md:rounded-[28px] border border-white/10 bg-[#111827] hover:bg-[#151c2e] transition-all p-4 md:p-5 flex items-center gap-3 md:gap-4"
+        >
 
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-fuchsia-500/10 flex items-center justify-center">
 
@@ -186,21 +261,92 @@ export default function Sidebar({
 
           </div>
 
-          <div className="text-left">
+          <div className="text-left flex-1">
 
             <p className="font-semibold text-[18px] md:text-[25px]">
               Settings
             </p>
 
             <p className="text-[13px] md:text-[20px] text-gray-400">
-              Preferences & personalization
+              Appearance
             </p>
 
           </div>
 
+          <ChevronRight
+            size={18}
+            className={`transition-transform ${
+              showThemeOptions
+                ? "rotate-90"
+                : ""
+            }`}
+          />
+
         </button>
 
+        {/* ================================================= */}
+        {/* THEME OPTIONS */}
+        {/* ================================================= */}
+
+        {showThemeOptions && (
+
+          <div className="mt-2 rounded-[20px] border border-white/10 bg-[#111827] p-2">
+
+            {/* DARK */}
+
+            <button
+              onClick={() =>
+                changeTheme("dark")
+              }
+              className="w-full rounded-xl px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-all"
+            >
+
+              <Moon size={18} />
+
+              <span className="flex-1 text-left">
+                Dark
+              </span>
+
+              {theme === "dark" && (
+                <Check
+                  size={18}
+                  className="text-teal-400"
+                />
+              )}
+
+            </button>
+
+            {/* LIGHT */}
+
+            <button
+              onClick={() =>
+                changeTheme("light")
+              }
+              className="w-full rounded-xl px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-all"
+            >
+
+              <Sun size={18} />
+
+              <span className="flex-1 text-left">
+                Light
+              </span>
+
+              {theme === "light" && (
+                <Check
+                  size={18}
+                  className="text-teal-400"
+                />
+              )}
+
+            </button>
+
+          </div>
+
+        )}
+
+        {/* ================================================= */}
         {/* LOGOUT */}
+        {/* ================================================= */}
 
         <button
           onClick={() => {
@@ -230,9 +376,11 @@ export default function Sidebar({
             transition-all
           "
         >
+
           <LogOut size={22} />
 
           Logout
+
         </button>
 
       </div>
