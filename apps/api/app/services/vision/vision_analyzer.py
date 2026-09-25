@@ -1,21 +1,15 @@
-
 import base64
 
 from app.services.llm.groq_client import client
 
 
-def analyze_medical_image(
-    image_path
-):
+def analyze_medical_image(image_path):
 
     # ============================================
     # CONVERT IMAGE TO BASE64
     # ============================================
 
-    with open(
-        image_path,
-        "rb"
-    ) as image_file:
+    with open(image_path, "rb") as image_file:
 
         base64_image = base64.b64encode(
             image_file.read()
@@ -37,6 +31,7 @@ IMPORTANT:
 - Use bullet points
 - Mention when professional consultation is needed
 - Keep response visually clean and readable
+- Keep the response concise
 
 Format response like:
 
@@ -58,24 +53,18 @@ Format response like:
     # ============================================
 
     completion = client.chat.completions.create(
-
         model="qwen/qwen3.8-27b",
 
         messages=[
-
             {
                 "role": "user",
-
                 "content": [
-
                     {
                         "type": "text",
                         "text": prompt,
                     },
-
                     {
                         "type": "image_url",
-
                         "image_url": {
                             "url": f"data:image/jpeg;base64,{base64_image}"
                         },
@@ -85,11 +74,7 @@ Format response like:
         ],
 
         temperature=0.4,
+        max_tokens=800,
     )
 
-    return (
-        completion
-        .choices[0]
-        .message
-        .content
-    )
+    return completion.choices[0].message.content
