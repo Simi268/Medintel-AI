@@ -91,7 +91,7 @@ Use occasional emojis naturally 💊🩺
 
     completion = client.chat.completions.create(
 
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
 
         messages=[
 
@@ -156,7 +156,7 @@ Rules:
 
     completion = client.chat.completions.create(
 
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
 
         messages=[
 
